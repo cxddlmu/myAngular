@@ -7,7 +7,21 @@ const routes: Routes = [
     path: "element-angular",
     // canActivate: [ContentGuard],
     loadChildren:
-      "app/element-angular/element-angular.module#ElementAngularModule",
+      "./element-angular/element-angular.module#ElementAngularModule",
+    data: {}
+  },
+  {
+    path: "form",
+    // canActivate: [ContentGuard],
+    loadChildren:
+      "./form/form.module#FormModule",
+    data: {}
+  },
+  {
+    path: "angular-core",
+    // canActivate: [ContentGuard],
+    loadChildren:
+      "./angular-core/angular-core.module#AngularCoreModule",
     data: {}
   },
   {
@@ -15,7 +29,7 @@ const routes: Routes = [
     redirectTo: "/element-angular/layout",
     pathMatch: "prefix"
   },
-  { path: "", redirectTo: "/element-angular/layout", pathMatch: "full" }
+  // { path: "", redirectTo: "/element-angular/layout", pathMatch: "full" }
 ];
 
 @NgModule({
@@ -23,4 +37,4 @@ const routes: Routes = [
   declarations: [],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }
