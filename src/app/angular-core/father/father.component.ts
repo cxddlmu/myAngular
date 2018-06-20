@@ -1,4 +1,5 @@
 import { Component, OnInit, SimpleChanges, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-father',
@@ -11,7 +12,19 @@ export class FatherComponent implements OnInit {
   @Input() age: number;
   @Input() resumes: Array<any>
 
-
+  testRxjs() {
+    var observable = Observable.create(function (observer) {
+      observer.next(1);
+      observer.next(2);
+      observer.next(3);
+      observer.complete();
+    });
+    observable.subscribe(
+      value => console.log(value),
+      err => { },
+      () => console.log('this is the end')
+    );
+  }
   componentName = "FatherComponent";
   ngDoCheck(): void {
     console.log(this.componentName + "-ngDoCheck");
