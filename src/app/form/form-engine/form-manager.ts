@@ -6,9 +6,10 @@ import { Subscription } from "rxjs";
 // import { DataValidator } from "./data-validator";
 export class FormManager {
   duplicateFieldNames: any;
-  constructor(private domainObj, private formGroup: FormGroup, private formConfig, private metaData: Metadata, private formBuilder: FormBuilder, private refData) {
+  constructor(private domainObj, private formGroup: FormGroup, private formConfig, private metadata: Metadata, private formBuilder: FormBuilder, private refData) {
+    //1.if config file is separated, combat them
     this.initValidityFormConfig();
-
+    //2.
     this.initFormDataValWithDomainVal();
   }
   private setIsOptional(ctrlKey, ctrlVal) {
@@ -84,7 +85,7 @@ export class FormManager {
   // }
 
   private initValidityFormConfig() {
-    let validityMetadata = this.metaData.getValidityMetadata();
+    let validityMetadata = this.metadata.getValidityMetadata();
     for (let formCtrlKey in validityMetadata) {
       if (formCtrlKey) {
         let settingEntity = this.formConfig[formCtrlKey];
@@ -106,34 +107,35 @@ export class FormManager {
    * @param domainVal
    * @param control
    *
-   * formgroup---field(type:primitive,array)
-   *          |--field--formArray--formgroup---field(type:primitive,array)
+   * formgroup---ctrlKey(type:primitive,array)
+   *          |--ctrlKey--formArray--formgroup---ctrlKey(type:primitive,array,json)
+   *          |--ctrlKey--formgroup--ctrlKey
    */
-  setControlValWithDomainVal(domainVal, control: AbstractControl) {
-    if (control instanceof FormGroup) {
-      if (_.isEmpty(domainVal)) {
-        return;
-      }
-      for (let key in control.controls) {
-        this.setControlValWithDomainVal(domainVal[key], control.get(key));
-      }
-    } else if (control instanceof FormArray) {
-      if (!Array.isArray(domainVal) || domainVal.length == 0) {
-        return;
-      }
-      let index = 0;
-      for (let item of domainVal) {
-        let formArray = control;
-        if (index > 0) {
-          formArray.push(this.formBuilder.group(formArray.at(0).value));
-        }
-        this.setControlValWithDomainVal(item, formArray.at(index));
-        index++;
-      }
-    } else {
-      control.patchValue(domainVal);
-    }
-  }
+  // setControlValWithDomainVal(domainVal, control: AbstractControl) {
+  //   if (control instanceof FormGroup) {
+  //     if (_.isEmpty(domainVal)) {
+  //       return;
+  //     }
+  //     for (let key in control.controls) {
+  //       this.setControlValWithDomainVal(domainVal[key], control.get(key));
+  //     }
+  //   } else if (control instanceof FormArray) {
+  //     if (!Array.isArray(domainVal) || domainVal.length == 0) {
+  //       return;
+  //     }
+  //     let index = 0;
+  //     for (let item of domainVal) {
+  //       let formArray = control;
+  //       if (index > 0) {
+  //         formArray.push(this.formBuilder.group(formArray.at(0).value));
+  //       }
+  //       this.setControlValWithDomainVal(item, formArray.at(index));
+  //       index++;
+  //     }
+  //   } else {
+  //     control.patchValue(domainVal);
+  //   }
+  // }
   dataValidator;
   public init() {
     // this.dataValidator = new DataValidator(
@@ -144,23 +146,51 @@ export class FormManager {
     // );
 
     // 4. reset mandatory properties
-    // console.warn("????" + "resetMandatoryProperties-beg");
+
     this.dataValidator.initMandatoryConfig();
-    // console.warn("????" + "resetMandatoryProperties-end");
+
     // 5. pre check completeness status   , domain
     this.dataValidator.validateCompleteness();
-    // console.warn("????" + "validateCompleteness-end");
+
     this.duplicateFieldNames = this.dataValidator.validateUniquevalue();
     // 6. initialize form with value change handlers and set domain value
     // we still do not know if we can nest more array and formgroup, how the value will react, need to test
     // when array field change, array changefirst , then formgroup change
-    // when add new filed, formgroup change first , then array change every field
+    // when add new filed, formgroup change first , then array change if pathvalue is called
     this.initValueChangesSubscription(this.formGroup);
     // 7. set default values
-    // this.initDefaultValueSetting();
+    this.initDefaultValueSetting();
 
     //this.initArrayDefaultValue(this.formGroup, this.formConfig);
   }
+
+  private initDefaultValueSetting() {
+    //cs
+    let metadata = this.metadata.getDefaultValueMetadata().static;
+    for (let controlKey in this.formGroup.value) {
+      this.iterateForm(metadata[controlKey], this.formGroup.get(controlKey));
+    }
+
+    let defaultValueStaticArr = this.metadata.getDefaultValueMetadata().static;
+    for (let defaultValueStatic of defaultValueStaticArr) {
+      this.setDefaultValueMetadataControl(defaultValueStatic, this.formGroup.get(defaultValueStatic));
+    }
+
+    // 2. handle conditional default values
+
+    for (let controlKey in this.formGroup.controls) {
+      if (this.formGroup.controls[controlKey] instanceof FormArray) {
+        (<FormArray>this.formGroup.get(controlKey)).controls.forEach((v, i, a) => {
+          for (let controlKey_2 in v.value) {
+            this.handleConditionalDefaultValueSetting(controlKey_2, i, controlKey);
+          }
+        });
+      } else {
+        this.handleConditionalDefaultValueSetting(controlKey);
+      }
+    }
+  }
+
   private initValueChangesSubscription(fromGroup: FormGroup): void {
     for (let formCtrlKey in fromGroup.controls) {
       if (fromGroup.get(formCtrlKey) instanceof FormArray) {
