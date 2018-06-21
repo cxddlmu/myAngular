@@ -138,11 +138,18 @@ export class CustomerMetadata extends Metadata {
         basicInfo: {
           conditional: {
             prefix: {
-              customerTitle: {
-                value: "{prefixName} {lastName} {firstName},",
-                isOverride: true,
-                condition: "hasPrefix,hasNoPrefix"
-              }
+              customerTitle: [
+                {
+                  value: "{prefixName} {lastName} {firstName}",
+                  isOverride: true,
+                  condition: "hasPrefix"
+                },
+                {
+                  value: "",
+                  isOverride: true,
+                  condition: "hasNoPrefix"
+                }
+              ]
             }
           }
         }
@@ -203,22 +210,14 @@ export class CustomerMetadata extends Metadata {
   getCompletenessMetadata() {
     let base = {
       basicInfo: {
-        static: [
-          "prefix",
-          "lastName",
-          "customerTitle",
-          "birthday",
-          "gender",
-          "maritalStatus",
-          "birthCountry",
-          "birthCity",
-          "residenceCountry",
-          "permanentResident"
-        ],
-        conditional: {//when a change, b is affected
-          existingCitigoldCustomer: {
-            existingCitigoldHomeCountry: "isInAnotherCountry"
-          },
+        static: ["prefix", "lastName", "customerTitle", "birthday", "gender", "maritalStatus", "birthCountry", "birthCity", "residenceCountry", "permanentResident"],
+        conditional: {
+          //when a change, b is affected
+          existingCitigoldCustomer: [
+            {
+              existingCitigoldHomeCountry: "isInAnotherCountry"
+            }
+          ]
         },
         conditions: {
           isInAnotherCountry: '{existingCitigoldCustomer}=="Y"'
@@ -243,11 +242,7 @@ export class CustomerMetadata extends Metadata {
       },
       ID: {
         basicInfo: {
-          static: [
-            "motherMaidenName",
-            "correspondenceLanguage",
-            "localWithholdingTax"
-          ]
+          static: ["motherMaidenName", "correspondenceLanguage", "localWithholdingTax"]
         }
       }
     };

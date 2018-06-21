@@ -5,13 +5,50 @@ import * as _ from "lodash";
 import { Subscription } from "rxjs";
 // import { DataValidator } from "./data-validator";
 export class FormManager {
-  k;
   duplicateFieldNames: any;
   constructor(private domainObj, private formGroup: FormGroup, private formConfig, private metaData: Metadata, private formBuilder: FormBuilder, private refData) {
     this.initValidityFormConfig();
 
     this.initFormDataValWithDomainVal();
   }
+  private setIsOptional(ctrlKey, ctrlVal) {
+    this.setEntityForObj(ctrlKey, ctrlVal, "isOptional");
+  }
+  private setMaxLength(ctrlKey, ctrlVal) {
+    this.setEntityForObj(ctrlKey, ctrlVal, "maxLength");
+  }
+  private setIsPartialMask(ctrlKey, ctrlVal) {
+    this.setEntityForObj(ctrlKey, ctrlVal, "isPartialMask");
+  }
+  private setIsDisabled(ctrlKey, ctrlVal) {
+    this.setEntityForObj(ctrlKey, ctrlVal, "isDisableds");
+  }
+
+  private setIsOptionals(ctrlKey, ctrlVal, index) {
+    this.setEntityForArr(ctrlKey, ctrlVal, index, "isOptional");
+  }
+  private setMaxLengths(ctrlKey, ctrlVal, index) {
+    this.setEntityForArr(ctrlKey, ctrlVal, index, "maxLength");
+  }
+  private setIsPartialMasks(ctrlKey, ctrlVal, index) {
+    this.setEntityForArr(ctrlKey, ctrlVal, index, "isPartialMask");
+  }
+  private setIsDisableds(ctrlKey, ctrlVal, index) {
+    this.setEntityForArr(ctrlKey, ctrlVal, index, "isDisableds");
+  }
+  private setEntityForObj(ctrlKey, ctrlVal, entityKey) {
+    this.formConfig[ctrlKey].settingEntity[entityKey] = ctrlVal;
+  }
+  private setEntityForArr(ctrlKey, ctrlVal, index, entityKey) {
+    let settingEntity = this.formConfig[ctrlKey];
+    if (settingEntity[entityKey]) {
+      settingEntity[entityKey][index] = ctrlVal;
+    } else {
+      settingEntity[entityKey] = [];
+      settingEntity[entityKey][0] = ctrlVal;
+    }
+  }
+
   private iterateForm(ctrl: AbstractControl, ctrlVal, callback?) {
     if (ctrl instanceof FormGroup) {
       if (_.isEmpty(ctrlVal)) {
@@ -102,7 +139,8 @@ export class FormManager {
     // this.dataValidator = new DataValidator(
     //   this.domainObj,
     //   this.formConfig,
-    //   this.metaData
+    //   this.metaData,
+    //   this
     // );
 
     // 4. reset mandatory properties
@@ -114,6 +152,9 @@ export class FormManager {
     // console.warn("????" + "validateCompleteness-end");
     this.duplicateFieldNames = this.dataValidator.validateUniquevalue();
     // 6. initialize form with value change handlers and set domain value
+    // we still do not know if we can nest more array and formgroup, how the value will react, need to test
+    // when array field change, array changefirst , then formgroup change
+    // when add new filed, formgroup change first , then array change every field
     this.initValueChangesSubscription(this.formGroup);
     // 7. set default values
     // this.initDefaultValueSetting();
@@ -135,6 +176,7 @@ export class FormManager {
       if (formGroup.get(formCtrlKey) instanceof FormArray) {
         this.initValueChangesSubscriptionForFormArray(formGroup, formCtrlKey); //new item
       } else if (formGroup.get(formCtrlKey) instanceof FormGroup) {
+        this.initValueChangesSubscriptionForFormGroup(formGroup, formCtrlKey); //new item
       } else {
         this.initConditionalDefaultValue();
       }
@@ -147,58 +189,55 @@ export class FormManager {
     if (formArray instanceof FormArray) {
       subscription.unsubscribe();
     }
-    (formArray as FormArray).controls.forEach((formGroup_sub, index, a) => {
-      for (let formCtrlKey_sub in (formGroup_sub as FormGroup).controls) {
+    (formArray as FormArray).controls.forEach((formGroupSub, index, a) => {
+      for (let formCtrlKeySub in (formGroupSub as FormGroup).controls) {
         subscription.add(
-          formGroup_sub.get(formCtrlKey_sub).valueChanges.subscribe(formCtrlVal_sub => {
-            this.setDomainValForObj(formCtrlKey_sub, formCtrlVal_sub);
-            // this.handleConditionalDefaultValue(formCtrlKey, index, formCtrlKey_sub);
-            this.dataValidator.validateCompleteness(index, formCtrlKey);
+          formGroupSub.get(formCtrlKeySub).valueChanges.subscribe(formCtrlValSub => {
+            this.setDomainValForObj(formCtrlKeySub, formCtrlValSub);
+            // this.handleConditionalDefaultValue(formCtrlKey, index, formCtrlKeySub);
+            this.dataValidator.validateCompleteness(index, formCtrlKeySub);
           })
         );
       }
     });
   }
 
-  private executeDefaultValueConditions(index?, domainField?) {
-    let executedConditions = {};
-    let defaultValConditions = this.metaData.getDefaultValueMetadata().conditions;
-    if (defaultValConditions) {
-      for (let defaultValCondition in defaultValConditions) {
-        let defaultValConditionExpr = defaultValConditions[defaultValCondition];
-        let compiledDefaultValConditionExpr = defaultValConditionExpr.replace(new RegExp(/{([^}]*)}/, "g"), "this.domainObj.$1");
+  private execCondition(conditionExpr) {
+    let compiledConditionExpr = conditionExpr.replace(new RegExp(/{([^}]*)}/, "g"), "this.domainObj.$1");
+    if (compiledConditionExpr) {
+      return eval(compiledConditionExpr);
+    }
+  }
 
-        let condValue = "";
-        if (typeof this.domainObj != "undefined" && compiledDefaultValConditionExpr.indexOf("undefined") != 0) {
-          if (domainField) {
-            let param = domainField;
-            if (param && eval("this.domainObj." + param) != undefined) {
-              condValue = eval(compiledDefaultValConditionExpr);
-            }
+  private execConditions(conditions) {
+    if (conditions) {
+      let execConditionsResult = {};
+      for (let condition in conditions) {
+        let conditionExpr = conditions[condition];
+        execConditionsResult[condition] = this.execCondition(conditionExpr);
+      }
+      return execConditionsResult;
+    }
+  }
+
+  private handleConditionalDefaultValue(triggerCtrlKey, formGroup) {
+    let defaultValConditionalCtrl = this.metaData.getDefaultValueMetadata().conditional;
+    let defaultValConditionsObj = this.metaData.getDefaultValueMetadata().conditions;
+    let triggerCtrlVal = defaultValConditionalCtrl[triggerCtrlKey];
+    for (let affectedCtlKey in triggerCtrlVal) {
+      let affectedCtlVals = triggerCtrlVal[affectedCtlKey];
+      for (let affectedCtlVal of affectedCtlVals) {
+        affectedCtlVal.isOverride;
+        if (this.execCondition(defaultValConditionsObj[affectedCtlVal.condition])) {
+          if (affectedCtlVal.value) {
+            this.setControlValWithDomainVal(affectedCtlVal.value, formGroup.get(affectedCtlKey));
           }
-        }
-        if (index != undefined) {
-          //array
-          if (executedConditions[defaultValCondition] == undefined) {
-            let arr = [];
-            arr[index] = condValue;
-            executedConditions[defaultValCondition] = arr;
-          } else {
-            executedConditions[defaultValCondition][index] = condValue;
+          if (affectedCtlVal.isDisabled) {
+            this.setIsDisabled(affectedCtlKey, affectedCtlVal.isDisabled);
           }
-        } else {
-          let condValue = "";
-          if (typeof this.domainObj != "undefined" && compiledDefaultValConditionExpr.indexOf("undefined") != 0) {
-            if (compiledDefaultValConditionExpr.indexOf("[index]") < 0) {
-              condValue = eval(compiledDefaultValConditionExpr);
-            }
-          }
-          executedConditions[defaultValCondition] = condValue;
         }
       }
     }
-
-    return executedConditions;
   }
 
   private initConditionalDefaultValue() {}

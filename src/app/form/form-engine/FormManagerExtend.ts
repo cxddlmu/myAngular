@@ -670,7 +670,7 @@ export class FormManagerExtend {
                     if (domainField) {
                         let param = domainField;
                         if (param && eval('this.domainObj.' + param) != undefined) {
-                            condValue = eval(compiledExpr);
+                            return  eval(compiledExpr);
                         }
                     }
                 }
