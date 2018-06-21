@@ -18,7 +18,8 @@ export class FormManager {
     private formGroup: FormGroup,
     private formConfig,
     private metaData: Metadata,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private refData
   ) {
     this.initValidityFormConfig();
 
