@@ -1,30 +1,51 @@
-import {
-  FormGroup,
-  FormArray,
-  FormControl,
-  FormBuilder,
-  Validators,
-  AbstractControl
-} from "@angular/forms";
+import { FormGroup, FormArray, FormControl, FormBuilder, Validators, AbstractControl } from "@angular/forms";
 import { Metadata } from "./metadata";
 import * as R from "ramda";
 import * as _ from "lodash";
 import { Subscription } from "rxjs";
 // import { DataValidator } from "./data-validator";
 export class FormManager {
+  k;
   duplicateFieldNames: any;
-  constructor(
-    private domainObj,
-    private formGroup: FormGroup,
-    private formConfig,
-    private metaData: Metadata,
-    private formBuilder: FormBuilder,
-    private refData
-  ) {
+  constructor(private domainObj, private formGroup: FormGroup, private formConfig, private metaData: Metadata, private formBuilder: FormBuilder, private refData) {
     this.initValidityFormConfig();
 
-    this.initFormData();
+    this.initFormDataValWithDomainVal();
   }
+  private iterateForm(ctrl: AbstractControl, ctrlVal, callback?) {
+    if (ctrl instanceof FormGroup) {
+      if (_.isEmpty(ctrlVal)) {
+        return;
+      }
+      let formCtrl = ctrl;
+      for (let formCtrlKey in formCtrl.controls) {
+        this.iterateForm(formCtrl.get(formCtrlKey), ctrlVal[formCtrlKey], callback);
+      }
+    } else if (ctrl instanceof FormArray) {
+      if (Array.isArray(ctrlVal) && ctrlVal.length == 0) {
+        return;
+      }
+      let index = 0;
+      let formArrayCtrl = ctrl as FormArray;
+      for (let item of ctrlVal) {
+        let formArrayCtrlCnt = formArrayCtrl.controls.length - 1;
+        if (formArrayCtrlCnt < index) {
+          formArrayCtrl.push(new FormGroup(formArrayCtrl.at(0).value));
+        }
+        this.iterateForm(formArrayCtrl.at(index), item);
+        index++;
+      }
+    } else {
+      callback(ctrl, ctrlVal);
+    }
+  }
+  // private setDefaultVal(metadata, ctrl: AbstractControl) {
+  //   let callback = function (ctrl, ctrlVal){
+  //     ctrl.patchValue(ctrlVal);
+  //   }
+  //   this.iterateForm(ctrl, metadata, callback);
+  // }
+
   private initValidityFormConfig() {
     let validityMetadata = this.metaData.getValidityMetadata();
     for (let formCtrlKey in validityMetadata) {
@@ -37,13 +58,11 @@ export class FormManager {
       }
     }
   }
-  private initFormData() {
-    for (let controlKey in this.formGroup.controls) {
-      this.setControlValWithDomainVal(
-        this.domainObj[controlKey],
-        this.formGroup.controls[controlKey]
-      );
-    }
+  private initFormDataValWithDomainVal() {
+    let callback = function(ctrl, ctrlVal) {
+      ctrl.patchValue(ctrlVal);
+    };
+    this.iterateForm(this.formGroup, this.domainObj, callback);
   }
   /**
    *
@@ -109,7 +128,18 @@ export class FormManager {
       this.initValueChangesSubscriptionForFormGroup(fromGroup, formCtrlKey);
     }
   }
+  private initValueChangesSubscriptionForFormGroup(formGroup: FormGroup, formCtrlKey: string): void {
+    formGroup.get(formCtrlKey).valueChanges.forEach((formCtrlVal: any) => {
+      this.setDomainValForObj(formCtrlKey, formCtrlVal);
 
+      if (formGroup.get(formCtrlKey) instanceof FormArray) {
+        this.initValueChangesSubscriptionForFormArray(formGroup, formCtrlKey); //new item
+      } else if (formGroup.get(formCtrlKey) instanceof FormGroup) {
+      } else {
+        this.initConditionalDefaultValue();
+      }
+    });
+  }
   private initValueChangesSubscriptionForFormArray(formGroup, formArrayKey): void {
     //todo
     let formArray = formGroup.get(formArrayKey);
@@ -120,17 +150,11 @@ export class FormManager {
     (formArray as FormArray).controls.forEach((formGroup_sub, index, a) => {
       for (let formCtrlKey_sub in (formGroup_sub as FormGroup).controls) {
         subscription.add(
-          formGroup_sub
-            .get(formCtrlKey_sub)
-            .valueChanges.subscribe(formCtrlVal_sub => {
-              this.setDomainValForObj(formCtrlKey_sub, formCtrlVal_sub);
-              this.handleConditionalDefaultValue(
-                formCtrlKey,
-                index,
-                formCtrlKey_sub
-              );
-              this.dataValidator.validateCompleteness(index, formCtrlKey);
-            })
+          formGroup_sub.get(formCtrlKey_sub).valueChanges.subscribe(formCtrlVal_sub => {
+            this.setDomainValForObj(formCtrlKey_sub, formCtrlVal_sub);
+            // this.handleConditionalDefaultValue(formCtrlKey, index, formCtrlKey_sub);
+            this.dataValidator.validateCompleteness(index, formCtrlKey);
+          })
         );
       }
     });
@@ -142,10 +166,7 @@ export class FormManager {
     if (defaultValConditions) {
       for (let defaultValCondition in defaultValConditions) {
         let defaultValConditionExpr = defaultValConditions[defaultValCondition];
-        let compiledDefaultValConditionExpr = defaultValConditionExpr.replace(
-          new RegExp(/{([^}]*)}/, "g"),
-          "this.domainObj.$1"
-        );
+        let compiledDefaultValConditionExpr = defaultValConditionExpr.replace(new RegExp(/{([^}]*)}/, "g"), "this.domainObj.$1");
 
         let condValue = "";
         if (typeof this.domainObj != "undefined" && compiledDefaultValConditionExpr.indexOf("undefined") != 0) {
@@ -167,10 +188,7 @@ export class FormManager {
           }
         } else {
           let condValue = "";
-          if (
-            typeof this.domainObj != "undefined" &&
-            compiledDefaultValConditionExpr.indexOf("undefined") != 0
-          ) {
+          if (typeof this.domainObj != "undefined" && compiledDefaultValConditionExpr.indexOf("undefined") != 0) {
             if (compiledDefaultValConditionExpr.indexOf("[index]") < 0) {
               condValue = eval(compiledDefaultValConditionExpr);
             }
@@ -183,170 +201,24 @@ export class FormManager {
     return executedConditions;
   }
 
-  private handleConditionalDefaultValue() {
-    let domainParent
-
-    // 1. execute condition expressions
-    let executedConditions = this.executeDefaultValueConditions(index, domainParent);//{country_province:[boolean]}
-    // 2. handle conditional default values
-    let 14f3w7rhWxJBLEBgQPstLE5PSb3GTQecED = this.defaultValueMetadata.conditional;
-    if (14f3w7rhWxJBLEBgQPstLE5PSb3GTQecED) {
-      for (let triggerFieldName in conditionalDefaultValueFields) {
-        let triggerField = conditionalDefaultValueFields[triggerFieldName];//triggerField-{},triggerFieldName-addresses.country
-        let arr = triggerFieldName.split('.');
-        //console.warn('conditional default value 11111' + triggerField);
-        if (triggerFieldName == currentTriggerControlKey || arr[1] == currentTriggerControlKey || arr[0] == currentTriggerControlKey) {
-          for (let fieldName in triggerField) {//field-{},fieldName-addresses.postalCode
-            let field = triggerField[fieldName];
-            //console.warn('conditional default value 2222' + fieldName);
-            let defaultValue;
-            if (Array.isArray(field['value'])) {
-              defaultValue = field['value'];
-            } else {
-              defaultValue = field['value'] && field['value'].split(',') || [''];
-            }
-            let requiredCondition = field['condition'] && field['condition'].split(',') || [];
-            let isOverride = field['isOverride'];
-            let isDisabled = field['isDisabled'];
-            let maxLength = field['maxLength'];
-            let partialMask = field['isPartialMask'];
-            //console.warn('conditional default value aaaaaaaaaaaaa' + defaultValue);
-            //console.warn('conditional default value bbbbbbbbbbbbb' + requiredCondition);
-            //console.warn('conditional default value ccccccccccccc' + executedConditions[requiredCondition]);
-
-            if (field['isOtherValue'] && field['isOtherValue'].length == 2) {
-              const optionValue = this.validityMetadata[triggerFieldName].options.find(item => item.key == this.domainObj[triggerFieldName]);
-              const otherValue = optionValue && optionValue.other || '';
-              const [from, to] = field['isOtherValue'];
-              const end = to == -1 ? otherValue.length - 1 : to;
-              let value = end == from ? (otherValue[from] || '') : otherValue.slice(from, end + 1);
-              if (isOverride && fromValueChange || (!isOverride && this.domainObj[fieldName] == "")) {
-                this.formGroup.get(this.domain2FormMap.get(fieldName)).patchValue(value.trim(), { onlySelf: true });
-              }
-            }
-
-            requiredCondition.forEach((reqCond, i) => {//reqCond-country_postalCode
-              if (index != undefined) {
-                let arr = fieldName.split('.');
-                let domainArr = arr[0];
-                let domainField = arr[1];
-                if (executedConditions[reqCond] && executedConditions[reqCond][index] == true) {
-                  if (typeof triggerField[fieldName]["section"] == 'undefined') {
-                    let controlKey = this.domain2FormMap.get(domainArr);
-                    if (controlKey) {//controlKey-addressDetailArray
-                      let control: any = this.formGroup.get(controlKey).get(String(index)).get(domainField);
-                      ////console.log(control);
-                      //console.warn('conditional default value ddddddddddddd' + control || control.value);
-                      if (defaultValue != undefined) {
-                        this.patchValue(defaultValue, isOverride, fromValueChange, control, i, Array.isArray(field['value']));
-                      }
-                      if (isDisabled != undefined) {
-                        let settingEntity = this.formConfig[domainField];
-                        if (settingEntity['isDisableds']) {
-                          settingEntity['isDisableds'][index] = isDisabled;
-                        } else {
-                          settingEntity['isDisableds'] = [];
-                          settingEntity['isDisableds'][index] = isDisabled;
-                        }
-                      }
-                      if (maxLength != undefined) {
-                        let settingEntity = this.formConfig[domainField];
-                        if (settingEntity['maxLengths']) {
-                          settingEntity['maxLengths'][index] = maxLength;
-                        } else {
-                          settingEntity['maxLengths'] = [];
-                          settingEntity['maxLengths'][index] = maxLength;
-                        }
-                      }
-                      if (partialMask != undefined) {
-                        let settingEntity = this.formConfig[domainField];
-                        if (settingEntity['isPartialMask']) {
-                          settingEntity['isPartialMask'][index] = partialMask;
-                        } else {
-                          settingEntity['isPartialMask'] = [];
-                          settingEntity['isPartialMask'][index] = partialMask;
-                        }
-                      }
-                    }
-                  } else if (typeof triggerField[fieldName]["section"] != 'undefined' && typeof domainField == 'undefined') {
-                    this.setSectionDefaultValue(triggerField, fieldName, defaultValue[i], isDisabled, domainArr, isOverride);
-                  }
-                }
-              } else {
-                if (executedConditions[reqCond] == true) {
-                  let arr = fieldName.split('.');
-                  let domainArr = arr[0];
-                  if (typeof triggerField[fieldName]["section"] == 'undefined') {
-                    let controlKey = this.domain2FormMap.get(domainArr);
-                    if (controlKey) {
-                      let control: any = this.formGroup.get(controlKey);
-                      ////console.log(control);
-                      if (isDisabled != undefined) {
-                        let settingEntity = this.formConfig[domainArr];
-                        settingEntity['isDisabled'] = isDisabled;
-                      }
-                      if (maxLength != undefined) {
-                        let settingEntity = this.formConfig[domainArr];
-                        settingEntity['maxLength'] = maxLength;
-                      }
-                      if (partialMask != undefined) {
-                        let settingEntity = this.formConfig[domainArr];
-                        settingEntity['isPartialMask'] = partialMask;
-                      }
-                      if (defaultValue != undefined) {
-                        this.patchValue(defaultValue, isOverride, fromValueChange, control, i, Array.isArray(field['value']));
-                      }
-                      //console.warn('conditional default value ddddddddddddd' + control || control.value);
-                    }
-                  }
-                  else if (typeof triggerField[fieldName]["section"] != 'undefined') {
-                    this.setSectionDefaultValue(triggerField, fieldName, defaultValue[i], isDisabled, domainArr, isOverride);
-                  }
-                }
-              }
-
-            });
-
-          }
-          if (currentTriggerControlKey) {
-            break;
-          }
-        }
-      }
-    }
-  }
-}
-  private initConditionalDefaultValue() { }
+  private initConditionalDefaultValue() {}
 
   private setDomainValForObj(formCtrlKey, formCtrlVal) {
-  this.domainObj[formCtrlKey] = formCtrlVal;
-}
+    this.domainObj[formCtrlKey] = formCtrlVal;
+  }
 
   private setDomainValForArr(formArrayKey, formCtrlKey, formCtrlVal, index) {
-  if (this.domainObj[formArrayKey] && this.domainObj[formArrayKey][index]) {
-    this.domainObj[formArrayKey][index][formCtrlKey] = formCtrlVal;
-  } else {
-    if (!Array.isArray(this.domainObj[formArrayKey])) {
-      this.domainObj[formArrayKey] = [];
-    }
-
-    this.domainObj[formArrayKey].push({
-      formCtrlKey: formCtrlVal
-    });
-  }
-}
-  private setDomainValForFieldInArr(formArrayKey, formCtrlKey, formCtrlVal, index) {
-
-}
-  private initValueChangesSubscriptionForFormGroup(formGroup: FormGroup, formCtrlKey: string): void {
-  formGroup.get(formCtrlKey).valueChanges.forEach((formCtrlVal: any) => {
-    this.setDomainValForObj(formCtrlKey, formCtrlVal);
-
-    if (formGroup.get(formCtrlKey) instanceof FormArray) {
-      this.initValueChangesSubscriptionForFormArray(formGroup, formCtrlKey); //new item
+    if (this.domainObj[formArrayKey] && this.domainObj[formArrayKey][index]) {
+      this.domainObj[formArrayKey][index][formCtrlKey] = formCtrlVal;
     } else {
-      this.initConditionalDefaultValue();
+      if (!Array.isArray(this.domainObj[formArrayKey])) {
+        this.domainObj[formArrayKey] = [];
+      }
+
+      this.domainObj[formArrayKey].push({
+        formCtrlKey: formCtrlVal
+      });
     }
-  });
-}
+  }
+  private setDomainValForFieldInArr(formArrayKey, formCtrlKey, formCtrlVal, index) {}
 }
