@@ -146,9 +146,7 @@ export class FormManager {
     // );
 
     // 4. reset mandatory properties
-
     this.dataValidator.initMandatoryConfig();
-
     // 5. pre check completeness status   , domain
     this.dataValidator.validateCompleteness();
 
@@ -157,12 +155,42 @@ export class FormManager {
     // we still do not know if we can nest more array and formgroup, how the value will react, need to test
     // when array field change, array changefirst , then formgroup change
     // when add new filed, formgroup change first , then array change if pathvalue is called
-    this.initValueChangesSubscription(this.formGroup);
+    this.initFormValueChangesSubscription(this.formGroup);
     // 7. set default values
     this.initDefaultValueSetting();
 
     //this.initArrayDefaultValue(this.formGroup, this.formConfig);
   }
+  private initFormValueChangesSubscription(formGroup: FormGroup) {
+    let formGroupValPrevious = _.cloneDeep(formGroup.value);
+    formGroup.valueChanges.subscribe(formGroupValCur => {
+      let diffResultArr = DeepDiff.diff(formGroupValPrevious, formGroupValCur);
+      formGroupValPrevious = _.cloneDeep(formGroupValCur);
+      if (Array.isArray(diffResultArr) && diffResultArr.length > 0) {
+        for (let diffResult of diffResultArr) {
+          if (diffResult.kind == "E") {
+            if (!Array.isArray(diffResult.path) || diffResult.path.length <= 0) {
+              continue;
+            }
+            this.setDomainVal(diffResult, this.domainObj, formGroupValCur);
+            this.handleConditionalDefaultValue();
+          } else if (diffResult.kind == "A") {
+          }
+        }
+      }
+    });
+  }
+  private setDomainVal(diffResult, domainObj, formGroupValCur) {
+    _.set(domainObj, diffResult.path, formGroupValCur);
+  }
+  private iterateDiffPath(formGroup, diffPathArr) {
+    for (let diffPath of diffPathArr) {
+      let formCtrlKey = diffPath;
+      if (formGroup.get(formCtrlKey) instanceof FormGroup) {
+      }
+    }
+  }
+  private getTriggerFormCtrlKey;
 
   private initDefaultValueSetting() {
     //cs
@@ -178,59 +206,59 @@ export class FormManager {
 
     // 2. handle conditional default values
 
-    for (let controlKey in this.formGroup.controls) {
-      if (this.formGroup.controls[controlKey] instanceof FormArray) {
-        (<FormArray>this.formGroup.get(controlKey)).controls.forEach((v, i, a) => {
-          for (let controlKey_2 in v.value) {
-            this.handleConditionalDefaultValueSetting(controlKey_2, i, controlKey);
-          }
-        });
-      } else {
-        this.handleConditionalDefaultValueSetting(controlKey);
-      }
-    }
+    // for (let controlKey in this.formGroup.controls) {
+    //   if (this.formGroup.controls[controlKey] instanceof FormArray) {
+    //     (<FormArray>this.formGroup.get(controlKey)).controls.forEach((v, i, a) => {
+    //       for (let controlKey_2 in v.value) {
+    //         this.handleConditionalDefaultValueSetting(controlKey_2, i, controlKey);
+    //       }
+    //     });
+    //   } else {
+    //     this.handleConditionalDefaultValueSetting(controlKey);
+    //   }
+    // }
   }
 
-  private initValueChangesSubscription(fromGroup: FormGroup): void {
-    for (let formCtrlKey in fromGroup.controls) {
-      if (fromGroup.get(formCtrlKey) instanceof FormArray) {
-        this.initValueChangesSubscriptionForFormArray(fromGroup, formCtrlKey);
-      }
-      this.initValueChangesSubscriptionForFormGroup(fromGroup, formCtrlKey);
-    }
-  }
-  private initValueChangesSubscriptionForFormGroup(formGroup: FormGroup, formCtrlKey: string): void {
-    formGroup.get(formCtrlKey).valueChanges.forEach((formCtrlVal: any) => {
-      this.setDomainValForObj(formCtrlKey, formCtrlVal);
+  // private initValueChangesSubscription(fromGroup: FormGroup): void {
+  //   for (let formCtrlKey in fromGroup.controls) {
+  //     if (fromGroup.get(formCtrlKey) instanceof FormArray) {
+  //       this.initValueChangesSubscriptionForFormArray(fromGroup, formCtrlKey);
+  //     }
+  //     this.initValueChangesSubscriptionForFormGroup(fromGroup, formCtrlKey);
+  //   }
+  // }
+  // private initValueChangesSubscriptionForFormGroup(formGroup: FormGroup, formCtrlKey: string): void {
+  //   formGroup.get(formCtrlKey).valueChanges.forEach((formCtrlVal: any) => {
+  //     this.setDomainValForObj(formCtrlKey, formCtrlVal);
 
-      if (formGroup.get(formCtrlKey) instanceof FormArray) {
-        this.initValueChangesSubscriptionForFormArray(formGroup, formCtrlKey); //new item
-      } else if (formGroup.get(formCtrlKey) instanceof FormGroup) {
-        this.initValueChangesSubscriptionForFormGroup(formGroup, formCtrlKey); //new item
-      } else {
-        this.initConditionalDefaultValue();
-      }
-    });
-  }
-  private initValueChangesSubscriptionForFormArray(formGroup, formArrayKey): void {
-    //todo
-    let formArray = formGroup.get(formArrayKey);
-    let subscription: Subscription;
-    if (formArray instanceof FormArray) {
-      subscription.unsubscribe();
-    }
-    (formArray as FormArray).controls.forEach((formGroupSub, index, a) => {
-      for (let formCtrlKeySub in (formGroupSub as FormGroup).controls) {
-        subscription.add(
-          formGroupSub.get(formCtrlKeySub).valueChanges.subscribe(formCtrlValSub => {
-            this.setDomainValForObj(formCtrlKeySub, formCtrlValSub);
-            // this.handleConditionalDefaultValue(formCtrlKey, index, formCtrlKeySub);
-            this.dataValidator.validateCompleteness(index, formCtrlKeySub);
-          })
-        );
-      }
-    });
-  }
+  //     if (formGroup.get(formCtrlKey) instanceof FormArray) {
+  //       this.initValueChangesSubscriptionForFormArray(formGroup, formCtrlKey); //new item
+  //     } else if (formGroup.get(formCtrlKey) instanceof FormGroup) {
+  //       this.initValueChangesSubscriptionForFormGroup(formGroup, formCtrlKey); //new item
+  //     } else {
+  //       this.initConditionalDefaultValue();
+  //     }
+  //   });
+  // }
+  // private initValueChangesSubscriptionForFormArray(formGroup, formArrayKey): void {
+  //   //todo
+  //   let formArray = formGroup.get(formArrayKey);
+  //   let subscription: Subscription;
+  //   if (formArray instanceof FormArray) {
+  //     subscription.unsubscribe();
+  //   }
+  //   (formArray as FormArray).controls.forEach((formGroupSub, index, a) => {
+  //     for (let formCtrlKeySub in (formGroupSub as FormGroup).controls) {
+  //       subscription.add(
+  //         formGroupSub.get(formCtrlKeySub).valueChanges.subscribe(formCtrlValSub => {
+  //           this.setDomainValForObj(formCtrlKeySub, formCtrlValSub);
+  //           // this.handleConditionalDefaultValue(formCtrlKey, index, formCtrlKeySub);
+  //           this.dataValidator.validateCompleteness(index, formCtrlKeySub);
+  //         })
+  //       );
+  //     }
+  //   });
+  // }
 
   private execCondition(conditionExpr) {
     let compiledConditionExpr = conditionExpr.replace(new RegExp(/{([^}]*)}/, "g"), "this.domainObj.$1");
