@@ -35,14 +35,46 @@ export class ValidateFieldsSubmitFormComponent implements OnInit {
         zipCode: [null, Validators.required],
         city: [null, Validators.required],
         state: [null, Validators.required],
-        country: [null, Validators.required]
+        country: [null, Validators.required],
+        school:this.formBuilder.group({schoolName:[null]}),
+        shops:this.formBuilder.array(
+          [this.formBuilder.group({ shopName: [null, Validators.required] })],
+          Validators.required
+        )
       }),
       phones: this.formBuilder.array(
         [this.formBuilder.group({ tel: [null, Validators.required] })],
         Validators.required
-      )
+      ),
+      friends:this.formBuilder.array(
+        [this.formBuilder.group({ friendNames: this.formBuilder.array(
+          [this.formBuilder.group({ friendTel: [null, Validators.required] })],
+          Validators.required
+        ), friendId:[null]})],
+        Validators.required
+      ),
     });
     this.initValueChange(this.form);
+  }
+  delSub(item,index){
+    (item.get("friendNames") as FormArray).removeAt(index);
+  }
+  addSub(item,index){
+    (item.get("friendNames") as FormArray).push(
+      this.formBuilder.group({ friendTel: [null, Validators.required] })
+    );
+  }
+  delFriends(index){
+    (this.form.get("friends") as FormArray).removeAt(index);
+  }
+  addFriends(){
+
+    (this.form.get("friends") as FormArray).push(
+      this.formBuilder.group({ friendNames: this.formBuilder.array(
+        [this.formBuilder.group({ friendTel: [null, Validators.required] })],
+        Validators.required
+      ), friendId:[null]})
+    );
   }
   initValueChange(formGroup) {
     Object.keys(formGroup.controls).forEach(key => {

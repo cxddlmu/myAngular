@@ -8,6 +8,7 @@ import { FieldErrorDisplayComponent } from './field-error-display/field-error-di
 import { SimpleFormComponent } from './simple-form/simple-form.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
+import { NestFormComponent } from './nest-form/nest-form.component';
 
 const routes: Routes = [
   { path: "", component: FormComponent },
@@ -18,7 +19,8 @@ const routes: Routes = [
     children:[
       { path: "simpleForm", component: SimpleFormComponent },
       { path: "validateSubmit", component: ValidateFieldsSubmitFormComponent },
-      { path: "submitFlag", component: SubmitFlagFormComponent }
+      { path: "submitFlag", component: SubmitFlagFormComponent },
+      { path: "nestForm", component: NestFormComponent }
     ]
   }
 
@@ -30,7 +32,7 @@ const routes: Routes = [
     RouterModule.forChild(routes)
   ],
   exports: [RouterModule],
-  declarations: [FormComponent, SubmitFlagFormComponent, SimpleFormComponent, ValidateFieldsSubmitFormComponent, FieldErrorDisplayComponent]
+  declarations: [FormComponent, SubmitFlagFormComponent, NestFormComponent,SimpleFormComponent, ValidateFieldsSubmitFormComponent, FieldErrorDisplayComponent]
 })
 
 export class FormModule { }

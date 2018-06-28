@@ -1,4 +1,4 @@
-import { Component, OnInit, SimpleChanges } from '@angular/core';
+import { Component, OnInit, SimpleChanges, ViewContainerRef, ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-son',
@@ -6,13 +6,16 @@ import { Component, OnInit, SimpleChanges } from '@angular/core';
   styleUrls: ['./son.component.css']
 })
 export class SonComponent implements OnInit {
+  ngOnInit(): void {
+    console.log(this.componentName+"-ngOnInit");
+  }
+  componentName = "SonComponent";
 
- 
+
   playGame(){
     console.log(this.componentName+"-playGame");
   }
 
-  componentName = "SonComponent";
   ngDoCheck(): void {
     console.log(this.componentName+"-ngDoCheck");
   }
@@ -34,11 +37,6 @@ export class SonComponent implements OnInit {
 
   constructor() {
     console.log(this.componentName+"-constructor");
-  }
-
-  ngOnInit() {
-    console.log(this.componentName+"-ngOnInit");
-
   }
 
   ngOnChanges(changes: SimpleChanges) {

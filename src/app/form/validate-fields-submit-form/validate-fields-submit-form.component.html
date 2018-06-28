@@ -4,8 +4,7 @@
     <div class="col-sm-12">
       <label for="name" class="control-label required">Name</label>
       <input type="text" id="name" class="form-control" formControlName="name">
-      <app-field-error-display [displayError]="isFieldValid('name')" errorMsg="Please inform your name">
-      </app-field-error-display>
+
     </div>
   </div>
 
@@ -13,11 +12,10 @@
     <div class="col-sm-12">
       <label for="email" class="control-label required">Email</label>
       <input type="text" id="email" class="form-control" formControlName="email">
-      <app-field-error-display [displayError]="isFieldValid('email')" errorMsg="Please inform your email">
-      </app-field-error-display>
+
     </div>
   </div>
-  <div (click)="add()">add</div>
+  <div (click)="add()">add phones</div>
   <div formArrayName="phones">
     <div *ngFor="let item of form.get('phones').controls;let index=index" [formGroupName]="index">
       <div class="form-group">
@@ -25,10 +23,35 @@
         <div class="col-md-3">
           <label for="tel" class="control-label">tel</label>
           <input type="text" id="tel" class="form-control" formControlName="tel">
-          <app-field-error-display [displayError]="isFieldInArrayValid(index,'phones','tel')" errorMsg="Please enter your tel">
-          </app-field-error-display>
+
         </div>
         <div (click)="del(index)">del</div>
+      </div>
+    </div>
+  </div>
+  <div (click)="addFriends()">add friends</div>
+  <div formArrayName="friends">
+    <div *ngFor="let item of form.get('friends').controls;let index=index" [formGroupName]="index">
+      <div class="form-group">
+
+        <div class="col-md-3">
+          <label for="tel" class="control-label">friendId</label>
+          <input type="text" class="form-control" formControlName="friendId">
+
+          <div (click)="addSub(item,index)">add friendName</div>
+          <div formArrayName="friendNames">
+            <div *ngFor="let subItem of item.get('friendNames').controls;let indexSub=index" [formGroupName]="indexSub">
+              <div class="form-group">
+                <div class="col-md-3">
+                  <label for="tel" class="control-label">friendTel</label>
+                  <input type="text" class="form-control" formControlName="friendTel">
+                </div>
+                <div (click)="delSub(item,indexSub)">del friendName</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div (click)="delFriends(index)">delFriends</div>
       </div>
     </div>
   </div>

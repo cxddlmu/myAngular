@@ -155,31 +155,55 @@ export class FormManager {
     // we still do not know if we can nest more array and formgroup, how the value will react, need to test
     // when array field change, array changefirst , then formgroup change
     // when add new filed, formgroup change first , then array change if pathvalue is called
-    this.initFormValueChangesSubscription(this.formGroup);
+    this.initFormValueChangesSubscription(this.formGroup,this.domainObj);
     // 7. set default values
     this.initDefaultValueSetting();
 
     //this.initArrayDefaultValue(this.formGroup, this.formConfig);
   }
-  private initFormValueChangesSubscription(formGroup: FormGroup) {
+  /**
+   * cxdteste
+   * @param formGroup
+   * @param domainObj
+   */
+  private initFormValueChangesSubscription(formGroup: FormGroup, domainObj) {
     let formGroupValPrevious = _.cloneDeep(formGroup.value);
     formGroup.valueChanges.subscribe(formGroupValCur => {
       let diffResultArr = DeepDiff.diff(formGroupValPrevious, formGroupValCur);
       formGroupValPrevious = _.cloneDeep(formGroupValCur);
       if (Array.isArray(diffResultArr) && diffResultArr.length > 0) {
         for (let diffResult of diffResultArr) {
-          if (diffResult.kind == "E") {
-            if (!Array.isArray(diffResult.path) || diffResult.path.length <= 0) {
-              continue;
-            }
-            this.setDomainVal(diffResult, this.domainObj, formGroupValCur);
-            this.handleConditionalDefaultValue();
-          } else if (diffResult.kind == "A") {
+          if (!Array.isArray(diffResult.path) || diffResult.path.length <= 0) {
+            continue;
           }
+          if (diffResult.kind == "E") {
+            //element and array edit
+
+            this.setDomainVal(diffResult, domainObj, diffResult.rhs);
+            //cal conditional default
+          } else if (diffResult.kind == "A") {
+            //array
+            //1. array new item 2. array del item
+            //when array, new item need default value
+
+            if (diffResult.item.kind == "D") {
+              domainObj = _.cloneDeep(formGroupValCur);
+            } else if (diffResult.item.kind == "N") {
+              domainObj = _.cloneDeep(formGroupValCur);
+            }
+          }
+          console.log(diffResult);
+          console.log(domainObj);
         }
       }
     });
   }
+  /**
+   *
+   * @param diffResult
+   * @param domainObj
+   * @param formGroupValCur
+   */
   private setDomainVal(diffResult, domainObj, formGroupValCur) {
     _.set(domainObj, diffResult.path, formGroupValCur);
   }
@@ -279,8 +303,8 @@ export class FormManager {
   }
 
   private handleConditionalDefaultValue(triggerCtrlKey, formGroup) {
-    let defaultValConditionalCtrl = this.metaData.getDefaultValueMetadata().conditional;
-    let defaultValConditionsObj = this.metaData.getDefaultValueMetadata().conditions;
+    let defaultValConditionalCtrl = this.metadata.getDefaultValueMetadata().conditional;
+    let defaultValConditionsObj = this.metadata.getDefaultValueMetadata().conditions;
     let triggerCtrlVal = defaultValConditionalCtrl[triggerCtrlKey];
     for (let affectedCtlKey in triggerCtrlVal) {
       let affectedCtlVals = triggerCtrlVal[affectedCtlKey];

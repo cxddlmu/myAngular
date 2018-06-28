@@ -1,0 +1,96 @@
+<div class="container">
+<div class="col-md-8 col-xs-12">
+    <form [formGroup]="_form" novalidate (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="card">
+            <div class="card-header">
+              <h6>{{title}}</h6>
+            </div>
+            <div class="card-block">
+              <div class="form-group">
+                <label class="form-control-label">Teacher Name:</label>
+                <input type="text" class="form-control" placeholder="Teacher" formControlName="teacher" />
+                <small [hidden]="_form.controls.teacher.valid" class="text-danger">
+                  Teacher Name is required!
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12" formArrayName="schools">
+          <div *ngFor="let school of _form.controls['schools'].controls; let i=index">
+            <div class="card">
+              <div class="card-header text-primary">
+                <span style="font-weight: 500;">{{i + 1}} -</span>
+                <span>School Name: {{ _form.value.schools[i].school_name }}</span>
+                <span class="pull-right" *ngIf="_form.controls['schools'].controls.length > 1" (click)="removeSchool(i)">
+                  <i class="fa fa-remove text-danger"></i>
+                </span>
+              </div>
+              <div class="card-block" [formGroupName]="i">
+                <div class="form-group">
+                  <label class="form-control-label">School Name</label>
+                  <input type="text" class="form-control" placeholder="School Name" formControlName="school_name" />
+                  <small [hidden]="_form.controls.schools.controls[i].controls.school_name.valid" class="text-danger">
+                      School Name is required!
+                  </small>
+                </div>
+                <div class="form-group">
+                  <label class="form-control-label">School Description</label>
+                  <textarea rows="3" type="text" class="form-control" 
+                        placeholder="Description" formControlName="school_description"></textarea>
+                </div>
+                <div class="row" formArrayName="events">
+                  <div *ngFor="let event of school.get('events').controls; let idx=index">
+                    <div class="card">
+                      <div class="card-header">
+                        <span style="font-weight: 500;">{{idx + 1}} -</span>
+                        <span>Event Name</span>
+                          <span class="pull-right" *ngIf="school.controls['events'].controls.length > 1" (click)="removeEvent(school,i)">
+                            <i class="fa fa-remove text-danger">---</i>
+                          </span>                       
+                      </div>
+                      <div [formGroupName]="idx">
+                        <div class="card-block">
+                          <div class="form-group col-xs-12">
+                          <label class="form-control-label">Event Name</label>
+                          <input type="text" class="form-control" placeholder="Event Name" formControlName="event_name">
+                              <small [hidden]="school.controls.events.controls[idx].controls.event_name.valid" class="text-danger">
+                                  Event Name is required!
+                              </small>
+                          </div>                          
+                        </div>
+                      </div>
+                      <div class="card-footer">
+                        <a class="btn btn-success btn-minimize pull-right" (click)="addEvent(school,i)">Add another event +</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer text-primary">
+                <a class="btn" (click)="addSchool()">Add another school +</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xs-12" style="margin-bottom:10px;">
+        <button class="btn btn-primary pull-right" 
+                type="submit" [disabled]="!_form.valid">Submit</button>
+      </div>
+    </form>
+</div>
+
+
+  <div class="col-md-4 col-xs-12">
+    <div class="card-footer">
+      <h5>Field Values</h5>
+      <pre>{{ _form.value | json }}</pre>
+    </div>
+  </div>
+  </div>
+
