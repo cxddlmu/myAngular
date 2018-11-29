@@ -8,7 +8,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "buildaot": "ng build:aot"
+    "buildaot": "ng build:aot",
+    "startNotLocal": "ng serve --host 0.0.0.0 --disable-host-check"
   },
   "private": true,
   "dependencies": {
