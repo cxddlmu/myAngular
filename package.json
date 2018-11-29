@@ -9,6 +9,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "buildaot": "ng build:aot",
+    "storybook": "start-storybook -p 9001 -c .storybook",
     "startNotLocal": "ng serve --host 0.0.0.0 --disable-host-check"
   },
   "private": true,
@@ -40,7 +41,7 @@
     "@types/core-js": "2.5.0",
     "@types/jasmine": "~2.8.6",
     "@types/jasminewd2": "~2.0.3",
-    "@types/node": "~8.9.4",
+    "@types/node": "^10.12.2",
     "@types/string-template": "1.0.2",
     "codelyzer": "~4.2.1",
     "jasmine-core": "~2.99.1",

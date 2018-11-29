@@ -29,6 +29,11 @@ const routes: Routes = [
     redirectTo: "/element-angular/layout",
     pathMatch: "prefix"
   },
+  {
+    path:'new-tech',
+    loadChildren:"./new-tech/new-tech.module#NewTechModule",
+    data:{}
+  }
   // { path: "", redirectTo: "/element-angular/layout", pathMatch: "full" }
 ];
 

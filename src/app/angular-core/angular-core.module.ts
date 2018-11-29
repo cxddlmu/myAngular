@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AngularCoreComponent } from './angular-core.component';
 import { Routes, RouterModule } from '@angular/router';
@@ -49,6 +49,8 @@ const routes: Routes = [
   declarations: [AngularCoreComponent, FatherComponent, MotherComponent, GrandfatherComponent,
     GrandmotherComponent,
     DaughterComponent, SonComponent
-  ]
+  ],
+  schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
+
 })
 export class AngularCoreModule { }
