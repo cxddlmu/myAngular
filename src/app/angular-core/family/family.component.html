@@ -1,0 +1,20 @@
+<p>
+  {{" mother works!" | uppercase | customPipe}}
+</p>
+<app-daughter #daughter></app-daughter>
+<app-son #son></app-son>
+<ng-container #motherContainer></ng-container>
+<p ngNonBindable>{{ today | date: 'shortTime' }}</p>
+<p>{{ today | date: 'shortTime' }}</p>
+<!-- Output: 以当前时间为准，输出格式：10:40 AM -->
+<p ngNonBindable>{{ 'lo' | repeat:3 }}</p>
+<p>{{ 'lo' | repeat:3 }}</p>
+<!-- Output: lololo -->
+<ng-template #motherTemplate>
+  <span>this is mother's template</span>
+</ng-template>
+  <app-atom-spinner
+     [animationDuration]="1000"
+     [size]="60"
+     [color]="'#ff1d5e'"
+    ></app-atom-spinner>
