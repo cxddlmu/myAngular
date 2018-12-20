@@ -7,6 +7,7 @@ import { RxjsComponent } from './rxjs/rxjs.component';
 const routes: Routes = [
   { path: "ironDB", component: IronDBComponent },
 { path: "rxjs", component: RxjsComponent },
+{ path: "", component: IronDBComponent },
 
 
 ];

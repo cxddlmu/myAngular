@@ -27,18 +27,18 @@ const routes: Routes = [
   {
     path: "index.html",
     redirectTo: "/element-angular/layout",
-    pathMatch: "prefix"
+    
   },
   {
     path:'new-tech',
     loadChildren:"./new-tech/new-tech.module#NewTechModule",
     data:{}
-  }
-  // { path: "", redirectTo: "/element-angular/layout", pathMatch: "full" }
+  },
+  { path: "", redirectTo: "new-tech", pathMatch: "full" },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes,{ enableTracing: true })],
   declarations: [],
   exports: [RouterModule]
 })

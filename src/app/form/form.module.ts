@@ -11,7 +11,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NestFormComponent } from './nest-form/nest-form.component';
 
 const routes: Routes = [
-  { path: "", component: FormComponent },
+  // { path: "", component: FormComponent },
 
   {
     path:"",
