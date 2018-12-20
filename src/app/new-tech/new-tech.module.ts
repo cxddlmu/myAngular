@@ -3,9 +3,10 @@ import { CommonModule } from '@angular/common';
 import { NewTechComponent } from './new-tech.component';
 import { RouterModule, Routes } from '@angular/router';
 import { IronDBComponent } from './IronDB/IronDB.component';
+import { RxjsComponent } from './rxjs/rxjs.component';
 const routes: Routes = [
   { path: "ironDB", component: IronDBComponent },
-
+{ path: "rxjs", component: RxjsComponent },
 
 
 ];
@@ -15,7 +16,7 @@ const routes: Routes = [
     RouterModule.forChild(routes)
 
   ],
-  declarations: [NewTechComponent],
+  declarations: [NewTechComponent,IronDBComponent,RxjsComponent],
 })
 
 
