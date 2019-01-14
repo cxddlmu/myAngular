@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IronDB } from 'iron-db'
+import { ImmortalDB  } from 'immortal-db'
 
 @Component({
   selector: 'app-IronDB',
@@ -17,12 +17,12 @@ export class IronDBComponent implements OnInit {
   }
 
   async test(){
-    IronDB.set('hi', 'bonjour')
-    console.log(await IronDB.get('hi'))  // Prints 'bonjour'.
+    ImmortalDB.set('hi', 'bonjour')
+    console.log(await ImmortalDB.get('hi'))  // Prints 'bonjour'.
 
-    await IronDB.remove('hi')
+    await ImmortalDB.remove('hi')
 
-    console.log(await IronDB.get('hi')) // Prints 'null'.
+    console.log(await ImmortalDB.get('hi')) // Prints 'null'.
     return "ironDB test";
   }
 }

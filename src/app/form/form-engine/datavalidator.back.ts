@@ -21,7 +21,7 @@
 //       private formBuilder: FormBuilder
 //     ) {
 //       this.initValidityFormConfig();
-
+  
 //       this.initFormData();
 //     }
 //     private initValidityFormConfig() {
@@ -84,7 +84,7 @@
 //       //   this.formConfig,
 //       //   this.metaData
 //       // );
-
+  
 //       // 4. reset mandatory properties
 //       // console.warn("????" + "resetMandatoryProperties-beg");
 //       this.dataValidator.initMandatoryConfig();
@@ -97,7 +97,7 @@
 //       this.initValueChangesSubscription(this.formGroup);
 //       // 7. set default values
 //       // this.initDefaultValueSetting();
-
+  
 //       //this.initArrayDefaultValue(this.formGroup, this.formConfig);
 //     }
 //     private initValueChangesSubscription(group: FormGroup): void {
@@ -108,7 +108,7 @@
 //         this.initValueChangesSubscriptionForFormGroup(group, formCtrlKey);
 //       }
 //     }
-
+  
 //     private initValueChangesSubscriptionForFormArray(
 //       formGroup,
 //       formArrayKey,
@@ -137,7 +137,7 @@
 //         }
 //       });
 //     }
-
+  
 //     private executeDefaultValueConditions(index?, domainField?) {
 //       let executedConditions = {};
 //       let defaultValConditions = this.metaData.getDefaultValueMetadata()
@@ -149,7 +149,7 @@
 //             new RegExp(/{([^}]*)}/, "g"),
 //             "this.domainObj.$1"
 //           );
-
+  
 //           let condValue = "";
 //           if (
 //             typeof this.domainObj != "undefined" &&
@@ -185,17 +185,17 @@
 //           }
 //         }
 //       }
-
+  
 //       return executedConditions;
 //     }
-
+  
 //     private handleConditionalDefaultValue() {}
 //     private initConditionalDefaultValue() {}
-
+  
 //     private setDomainValForObj(formCtrlKey, formCtrlVal) {
 //       this.domainObj[formCtrlKey] = formCtrlVal;
 //     }
-
+  
 //     private setDomainValForArr(formArrayKey, formCtrlKey, formCtrlVal, index) {
 //       if (this.domainObj[formArrayKey] && this.domainObj[formArrayKey][index]) {
 //         this.domainObj[formArrayKey][index][formCtrlKey] = formCtrlVal;
@@ -203,21 +203,21 @@
 //         if (!Array.isArray(this.domainObj[formArrayKey])) {
 //           this.domainObj[formArrayKey] = [];
 //         }
-
+  
 //         this.domainObj[formArrayKey].push({
 //           formCtrlKey: formCtrlVal
 //         });
 //       }
 //     }
 //     private setDomainValForFieldInArr(formArrayKey, formCtrlKey, formCtrlVal, index) {
-
+  
 //     private initValueChangesSubscriptionForFormGroup(
 //       formGroup: FormGroup,
 //       formCtrlKey: string
 //     ): void {
 //       formGroup.get(formCtrlKey).valueChanges.forEach((formCtrlVal: any) => {
 //         this.setDomainValForObj(formGroup, formCtrlKey);
-
+  
 //         if (formGroup.get(formCtrlKey) instanceof FormArray) {
 //           this.initValueChangesSubscriptionForFormArray(formGroup, formCtrlKey,); //new item
 //         } else {
@@ -226,3 +226,4 @@
 //       });
 //     }
 //   }
+  
