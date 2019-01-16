@@ -6,6 +6,8 @@ import { IronDBComponent } from './IronDB/IronDB.component';
 import { RxjsComponent } from './rxjs/rxjs.component';
 import { MagicGridComponent } from './magic-grid/magic-grid.component';
 import { StringSimilarityComponent } from './string-similarity/string-similarity.component';
+import { JsPDFComponent } from './jsPDF/jsPDF.component';
+import { SharedModule } from '../shared/shared.module';
 const routes: Routes = [
   {
     path: "", component: NewTechComponent,
@@ -13,18 +15,21 @@ const routes: Routes = [
           { path: "ironDB", component: IronDBComponent },
         { path: "rxjs", component: RxjsComponent },
         { path: "stringSimilarity", component: StringSimilarityComponent },
-         { path: "magicGrid", component: MagicGridComponent }
+         { path: "magicGrid", component: MagicGridComponent },
+         { path: "JsPDF", component: JsPDFComponent }
 
     ]
 }];
 @NgModule({
   imports: [
     CommonModule,
-    RouterModule.forChild(routes)
-
+    RouterModule.forChild(routes),
+    SharedModule
   ],
   declarations: [NewTechComponent,IronDBComponent,MagicGridComponent
-  ,RxjsComponent,StringSimilarityComponent],
+  ,RxjsComponent,StringSimilarityComponent,
+    JsPDFComponent
+],
 })
 
 
