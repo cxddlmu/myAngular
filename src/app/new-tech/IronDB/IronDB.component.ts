@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ImmortalDB } from 'immortal-db'
+import { ImmortalDB  } from 'immortal-db'
+
 @Component({
   selector: 'app-IronDB',
   templateUrl: './IronDB.component.html',
