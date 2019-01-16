@@ -70,7 +70,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     MatSortModule,
     MatPaginatorModule
   ],
-  exports: [CustomPipe, RepeatPipe,
+  exports: [CustomPipe, RepeatPipe,SafePipe,
     MatCheckboxModule,
     MatCheckboxModule,
     MatButtonModule,
@@ -103,6 +103,6 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     MatSortModule,
     MatPaginatorModule
   ],
-  declarations: [CustomPipe, SharedComponent, RepeatPipe]
+  declarations: [CustomPipe, SharedComponent, RepeatPipe,SafePipe]
 })
 export class SharedModule { }
