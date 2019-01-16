@@ -33,6 +33,11 @@ const routes: Routes = [
     path:'new-tech',
     loadChildren:"./new-tech/new-tech.module#NewTechModule",
     data:{}
+  },
+    {
+    path:'material2',
+    loadChildren:"./material2/material2.module#Material2Module",
+    data:{}
   }
   // { path: "", redirectTo: "/element-angular/layout", pathMatch: "full" }
 ];
