@@ -27,18 +27,23 @@ const routes: Routes = [
   {
     path: "index.html",
     redirectTo: "/element-angular/layout",
-    
+    pathMatch: "prefix"
   },
   {
     path:'new-tech',
     loadChildren:"./new-tech/new-tech.module#NewTechModule",
     data:{}
   },
-  { path: "", redirectTo: "new-tech", pathMatch: "full" },
+    {
+    path:'material2',
+    loadChildren:"./material2/material2.module#Material2Module",
+    data:{}
+  }
+  // { path: "", redirectTo: "/element-angular/layout", pathMatch: "full" }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes,{ enableTracing: true })],
+  imports: [RouterModule.forRoot(routes)],
   declarations: [],
   exports: [RouterModule]
 })
