@@ -8,6 +8,8 @@ import { MagicGridComponent } from './magic-grid/magic-grid.component';
 import { StringSimilarityComponent } from './string-similarity/string-similarity.component';
 import { JsPDFComponent } from './jsPDF/jsPDF.component';
 import { SharedModule } from '../shared/shared.module';
+import { SortableJSComponent } from './sortableJS/sortableJS.component';
+import { SortablejsModule } from 'angular-sortablejs/dist';
 const routes: Routes = [
   {
     path: "", component: NewTechComponent,
@@ -16,7 +18,8 @@ const routes: Routes = [
         { path: "rxjs", component: RxjsComponent },
         { path: "stringSimilarity", component: StringSimilarityComponent },
          { path: "magicGrid", component: MagicGridComponent },
-         { path: "JsPDF", component: JsPDFComponent }
+         { path: "jsPDF", component: JsPDFComponent },
+         { path: "sortableJS", component: SortableJSComponent }
 
     ]
 }];
@@ -24,11 +27,12 @@ const routes: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    SharedModule
+    SharedModule,SortablejsModule
   ],
   declarations: [NewTechComponent,IronDBComponent,MagicGridComponent
   ,RxjsComponent,StringSimilarityComponent,
-    JsPDFComponent
+    JsPDFComponent,
+    SortableJSComponent
 ],
 })
 
