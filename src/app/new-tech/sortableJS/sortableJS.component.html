@@ -1,0 +1,4 @@
+<h2>Drag / drop the item</h2>
+<div [sortablejs]="items" [sortablejsOptions]="options">
+  <div *ngFor="let item of items; let index=index" class="handle" ngClass="{'filtered':index==1}">{{ item }}</div>
+</div>
