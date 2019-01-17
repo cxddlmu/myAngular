@@ -8,6 +8,6 @@
 // declare var pdfMake;
 // declare function bindIscroll(divId);
 // declare var UAParser;
-declare var jsPDF;
+// declare var jsPDF;
 
 

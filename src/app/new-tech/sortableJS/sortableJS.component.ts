@@ -4,7 +4,7 @@ import { from } from 'rxjs';
 @Component({
   selector: 'app-sortableJS',
   templateUrl: './sortableJS.component.html',
-  styleUrls: ['./sortableJS.component.css']
+  // styleUrls: ['./sortableJS.component.css']
 })
 export class SortableJSComponent implements OnInit {
 

@@ -16,6 +16,8 @@ export class MagicGridComponent implements OnInit {
           container: "#container", // Required. Can be a class, id, or an HTMLElement.
           items: 20, // For a grid with 20 items. Required for dynamic content.
           animate: true, // Optional.
+          maxColumns:20,
+          useMin:false
         });
         
         magicGrid.listen();
