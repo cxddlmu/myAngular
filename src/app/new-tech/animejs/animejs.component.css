@@ -1,0 +1,28 @@
+
+
+::ng-deep .plate {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    background-color: #F6F4F2;
+}
+::ng-deep .keyframes-visualizer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    width: 16rem;
+    height: 16rem;
+}
+::ng-deep .keyframes-visualizer div {
+    position: relative;
+    width: .8rem;
+    height: .8rem;
+    margin: .1rem;
+    border: 2px solid currentColor;
+    background-color: #F6F4F2;
+    color: #373535;
+    border-radius: 50%;
+}
+
