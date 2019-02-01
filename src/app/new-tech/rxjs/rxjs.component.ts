@@ -19,12 +19,12 @@ export class RxjsComponent implements OnInit {
     obsHot1.subscribe(v => console.log("1st subscriber hot: " + v));
     obsHot1.subscribe(v => console.log("2nd subscriber hot: " + v));
     obsHot1.connect()
-    
+
     let obsCold1 = Observable.create(observer => observer.next(Date.now())) as Observable<any>
     obsCold1.subscribe(v => console.log("1st subscriber cold: " + v));
     obsCold1.subscribe(v => console.log("2nd subscriber cold: " + v));
-    
-    //
+
+    //cold whatever from the beginning value
     let obsHot = interval(1000).pipe(take(5), publish()) as ConnectableObservable<any>
     obsHot.connect();
     setTimeout(() => {
@@ -33,7 +33,7 @@ export class RxjsComponent implements OnInit {
         () => this.subscripton.add(obsHot.subscribe(v => console.log("2nd subscriber obsHot:" + v)))
         , 1000);
     }, 2000);
-    //
+    // warm when it begin the second one get from the first one current value
     let obsWarm = interval(1000).pipe(take(5), publish(), refCount()) as ConnectableObservable<any>
     setTimeout(() => {
       this.subscripton.add(obsWarm.subscribe(v => console.log("1st subscriber obsWarm:" + v)));
@@ -49,7 +49,7 @@ export class RxjsComponent implements OnInit {
         () => this.subscripton.add(obsCold.subscribe(v => console.log("2nd subscriber obsCold:" + v)))
         , 1000);
     }, 2000);
-    //with share
+    //with share the same as publish(), refCount()
     let obsWarm1 = interval(1000).pipe(take(5), share()) as ConnectableObservable<any>
     setTimeout(() => {
       this.subscripton.add(obsWarm1.subscribe(v => console.log("1st subscriber obsWarm1:" + v)));
@@ -58,28 +58,33 @@ export class RxjsComponent implements OnInit {
         , 1000);
     }, 2000);
     /*
-      14:46:02.088 rxjs.component.ts:35 1st subscriber obsHot:2
-14:46:02.088 rxjs.component.ts:35 1st subscriber obsWarm:0
-14:46:02.092 rxjs.component.ts:41 1st subscriber obsCold:0
-14:46:03.079 rxjs.component.ts:29 1st subscriber obsHot:3
-14:46:03.081 rxjs.component.ts:31 2nd subscriber obsHot:3
-14:46:03.087 rxjs.component.ts:35 1st subscriber obsWarm:1
-14:46:03.089 rxjs.component.ts:37 2nd subscriber obsWarm:1
-14:46:03.093 rxjs.component.ts:41 1st subscriber obsCold:1
-14:46:03.096 rxjs.component.ts:43 2nd subscriber obsCold:0
-14:46:04.079 rxjs.component.ts:29 1st subscriber obsHot:4
-14:46:04.081 rxjs.component.ts:31 2nd subscriber obsHot:4
-14:46:04.084 rxjs.component.ts:35 1st subscriber obsWarm:2
-14:46:04.086 rxjs.component.ts:37 2nd subscriber obsWarm:2
-14:46:04.090 rxjs.component.ts:41 1st subscriber obsCold:2
-14:46:04.094 rxjs.component.ts:43 2nd subscriber obsCold:1
-14:46:05.079 rxjs.component.ts:29 1st subscriber obsHot:5
-14:46:05.081 rxjs.component.ts:31 2nd subscriber obsHot:5
-14:46:05.084 rxjs.component.ts:35 1st subscriber obsWarm:3
-14:46:05.087 rxjs.component.ts:37 2nd subscriber obsWarm:3
-14:46:05.090 rxjs.component.ts:41 1st subscriber obsCold:3
-14:46:05.095 rxjs.component.ts:43 2nd subscriber obsCold:2
-14:46:06.079 rxjs.component.ts:29 1st subscriber obsHot:6
+                                  1st subscriber obsHot:2
+15:00:55.137 rxjs.component.ts:39 1st subscriber obsWarm:0
+15:00:55.145 rxjs.component.ts:47 1st subscriber obsCold:0
+15:00:55.149 rxjs.component.ts:55 1st subscriber obsWarm1:0
+15:00:56.130 rxjs.component.ts:31 1st subscriber obsHot:3
+15:00:56.133 rxjs.component.ts:33 2nd subscriber obsHot:3
+15:00:56.138 rxjs.component.ts:39 1st subscriber obsWarm:1
+15:00:56.146 rxjs.component.ts:41 2nd subscriber obsWarm:1
+15:00:56.158 rxjs.component.ts:47 1st subscriber obsCold:1
+15:00:56.163 rxjs.component.ts:55 1st subscriber obsWarm1:1
+15:00:56.164 rxjs.component.ts:57 2nd subscriber obsWarm1:1
+15:00:56.167 rxjs.component.ts:49 2nd subscriber obsCold:0
+15:00:57.130 rxjs.component.ts:31 1st subscriber obsHot:4
+15:00:57.131 rxjs.component.ts:33 2nd subscriber obsHot:4
+15:00:57.136 rxjs.component.ts:39 1st subscriber obsWarm:2
+15:00:57.139 rxjs.component.ts:41 2nd subscriber obsWarm:2
+15:00:57.144 rxjs.component.ts:47 1st subscriber obsCold:2
+15:00:57.152 rxjs.component.ts:55 1st subscriber obsWarm1:2
+15:00:57.155 rxjs.component.ts:57 2nd subscriber obsWarm1:2
+15:00:57.158 rxjs.component.ts:49 2nd subscriber obsCold:1
+15:00:58.137 rxjs.component.ts:39 1st subscriber obsWarm:3
+15:00:58.140 rxjs.component.ts:41 2nd subscriber obsWarm:3
+15:00:58.146 rxjs.component.ts:47 1st subscriber obsCold:3
+15:00:58.165 rxjs.component.ts:55 1st subscriber obsWarm1:3
+15:00:58.168 rxjs.component.ts:57 2nd subscriber obsWarm1:3
+15:00:58.172 rxjs.component.ts:49 2nd subscriber obsCold:2
+15:00:59.136 rxjs.component.ts:39 1st subscriber obsWarm:4
 
 
     */
@@ -98,6 +103,7 @@ export class RxjsComponent implements OnInit {
   ngAfterViewInit(): void {
     // will call twice
     //this.contacts = this.http.get('assets/response.json').pipe(map((response: any) => response['items']))
+
     // will call once
     this.contacts = this.http.get('assets/response.json').pipe(map((response: any) => response['items'])
       , publish()
@@ -114,7 +120,9 @@ export class RxjsComponent implements OnInit {
     setTimeout(() => this.contacts2 = this.contacts1, 500);
 
     var subject = new Subject();
-    var behaviorSubject = new BehaviorSubject(`null ---- behaviorSubject`);
+    var asyncSubject = new AsyncSubject();//cache last value,if have more value once, return the last value
+    var replaySubject = new ReplaySubject(2);
+    var behaviorSubject = new BehaviorSubject(`default value ---- behaviorSubject`);//default value and last value
 
     var observerA = {
       next: value => console.log('Observer A get value: ' + value),
@@ -128,19 +136,35 @@ export class RxjsComponent implements OnInit {
       complete: () => console.log('Observer B complete!')
     };
 
+    //subject: subscribe first then next.behaviorSubject: behaviorSubject not need
     subject.subscribe(observerA);
     behaviorSubject.subscribe(observerA);
+    console.log(behaviorSubject.value);
+    asyncSubject.subscribe(observerA);
+    replaySubject.subscribe(observerA);
+    // if uncomment these before method next the first subscribe will not work,but settimeout work
+    //replaySubject.complete();
+    //subject.complete();
+
     subject.next(`${new Date()}-------subject`);
+    asyncSubject.next(`${new Date()}-------asyncSubject`);
+    asyncSubject.next(`${new Date()}-------asyncSubject`);
+    asyncSubject.complete(); // if complete is commented , no value will be got
+    replaySubject.next(`${new Date()}-------replaySubject`);
+    replaySubject.next(`${new Date()}-------replaySubject`);
+    replaySubject.next(`${new Date()}-------replaySubject`);
     behaviorSubject.next(`${new Date()}-------behaviorSubject`);
-    behaviorSubject.next(`${new Date()}-------behaviorSubject`);
+    // behaviorSubject.next(`${new Date()}-------behaviorSubject`);
     // behaviorSubject.complete();// if complete is uncommented , none new subscription can not be added, new value can not be capture
+
+    //subscribe will exec immediately
     setTimeout(() => {
       subject.subscribe(observerB); // 1秒后订阅 can not invoke
-      behaviorSubject.subscribe(observerB); // 1秒后订阅
+      behaviorSubject.subscribe(observerB); // 1秒后订阅 
+      replaySubject.subscribe(observerB); // 1秒后订阅 
+      asyncSubject.subscribe(observerB); // 1秒后订阅 
     }, 1000);
-    //BehaviorSubject default value and last value
-    //ReplaySubject(3)
-    new ReplaySubject(3)
-    new AsyncSubject//last value
+
+
   }
 }
