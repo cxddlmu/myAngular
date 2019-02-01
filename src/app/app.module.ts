@@ -8,7 +8,9 @@ import { ElModule } from "element-angular";
 import { AppRoutingModule } from ".//app-routing.module";
 import { AngularCoreModule } from "./angular-core/angular-core.module";
 import { SharedModule } from "./shared/shared.module";
-
+import { SortablejsModule } from 'angular-sortablejs'
+import { HTTP_INTERCEPTORS } from "@angular/common/http";
+import { InterceptorComponent } from "./shared/interceptor/interceptor.component";
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -19,9 +21,10 @@ import { SharedModule } from "./shared/shared.module";
     ReactiveFormsModule,
     AppRoutingModule,
     SharedModule,
-    ElModule.forRoot()
+    ElModule.forRoot(),
+    SortablejsModule.forRoot({ animation: 150 })
   ],
-  providers: [],
+  providers: [    { provide: HTTP_INTERCEPTORS, useClass: InterceptorComponent, multi: true },
   bootstrap: [AppComponent]
 })
 export class AppModule {}
