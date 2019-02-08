@@ -1,0 +1,13 @@
+<p [ngClass]="{ backgroundColorGrey: backgroundSwitcher, backgroundColorYellow: !backgroundSwitcher }">
+  basic works!
+</p>
+<p [ngClass]="backgroundSwitcher ? 'backgroundColorGrey' : 'backgroundColorYellow'">
+  basic works!
+</p>
+<p [ngClass]="ngClassVal">
+  basic works!
+</p>
+<p [ngClass]="ngClassArr">
+  basic works!
+</p>
+<button (click)="buttonClick();"></button>
