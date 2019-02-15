@@ -1,0 +1,11 @@
+.clock{
+    background-color: aquamarine;
+    display:flex;
+    align-items:center;/*垂直居中*/
+    justify-content: center;/*水平居中*/
+    background-image: url(../../../assets/images/thumb.jpg);
+    height: 800px;
+    background-repeat: round;
+    font-style: italic;
+    font-size: 120px;
+}
