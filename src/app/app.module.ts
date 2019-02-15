@@ -11,6 +11,9 @@ import { SharedModule } from "./shared/shared.module";
 import { SortablejsModule } from 'angular-sortablejs'
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { InterceptorComponent } from "./shared/interceptor/interceptor.component";
+import { MyDemoModule } from "./my-demo/my-demo.module";
+
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -21,10 +24,11 @@ import { InterceptorComponent } from "./shared/interceptor/interceptor.component
     ReactiveFormsModule,
     AppRoutingModule,
     SharedModule,
+    MyDemoModule,
     ElModule.forRoot(),
     SortablejsModule.forRoot({ animation: 150 })
   ],
-  providers: [    { provide: HTTP_INTERCEPTORS, useClass: InterceptorComponent, multi: true },
+  providers: [    { provide: HTTP_INTERCEPTORS, useClass: InterceptorComponent, multi: true }],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

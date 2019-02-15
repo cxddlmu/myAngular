@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-// import anime from 'lib/anime.js';
-
+import anime from 'animejs';
 @Component({
   selector: 'app-animejs',
   templateUrl: './animejs.component.html',

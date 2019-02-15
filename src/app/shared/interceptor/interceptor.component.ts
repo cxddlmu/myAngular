@@ -6,7 +6,7 @@ import { catchError } from 'rxjs/internal/operators/catchError';
 @Component({
   selector: 'app-interceptor',
   templateUrl: './interceptor.component.html',
-  styleUrls: ['./interceptor.component.css']
+  // styleUrls: ['./interceptor.component.css']
 })
 export class InterceptorComponent implements HttpInterceptor {
 

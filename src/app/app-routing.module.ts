@@ -30,14 +30,19 @@ const routes: Routes = [
     pathMatch: "prefix"
   },
   {
-    path:'new-tech',
-    loadChildren:"./new-tech/new-tech.module#NewTechModule",
-    data:{}
+    path: 'new-tech',
+    loadChildren: "./new-tech/new-tech.module#NewTechModule",
+    data: {}
   },
-    {
-    path:'material2',
-    loadChildren:"./material2/material2.module#Material2Module",
-    data:{}
+  {
+    path: 'material2',
+    loadChildren: "./material2/material2.module#Material2Module",
+    data: {}
+  },
+  {
+    path: 'my-demo',
+    loadChildren: "./my-demo/my-demo.module#MyDemoModule",
+    data: {}
   }
   // { path: "", redirectTo: "/element-angular/layout", pathMatch: "full" }
 ];

@@ -4,7 +4,7 @@ import hotkeys from 'hotkeys-js';
 @Component({
   selector: 'app-hotkeys',
   templateUrl: './hotkeys.component.html',
-  styleUrls: ['./hotkeys.component.css']
+  // styleUrls: ['./honptkeys.component.css']
 })
 export class HotkeysComponent implements OnInit {
 

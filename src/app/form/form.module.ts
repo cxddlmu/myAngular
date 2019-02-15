@@ -6,21 +6,25 @@ import { SubmitFlagFormComponent } from './submit-flag-form/submit-flag-form.com
 import { ValidateFieldsSubmitFormComponent } from './validate-fields-submit-form/validate-fields-submit-form.component';
 import { FieldErrorDisplayComponent } from './field-error-display/field-error-display.component';
 import { SimpleFormComponent } from './simple-form/simple-form.component';
-import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NestFormComponent } from './nest-form/nest-form.component';
+import { DynamicFormComponent } from './dynamic-form/dynamic-form.component';
+import {FormlyModule} from '@ngx-formly/core';
+import {FormlyMaterialModule} from '@ngx-formly/material';
 
+import { FormlyMatDatepickerModule } from '@ngx-formly/material/datepicker'
 const routes: Routes = [
   // { path: "", component: FormComponent },
 
   {
-    path:"",
+    path: "",
     component: FormComponent,
-    children:[
+    children: [
       { path: "simpleForm", component: SimpleFormComponent },
       { path: "validateSubmit", component: ValidateFieldsSubmitFormComponent },
       { path: "submitFlag", component: SubmitFlagFormComponent },
-      { path: "nestForm", component: NestFormComponent }
+      { path: "nestForm", component: NestFormComponent },
+      { path: "dynamic", component: DynamicFormComponent }
     ]
   }
 
@@ -29,10 +33,14 @@ const routes: Routes = [
   imports: [
     ReactiveFormsModule,
     CommonModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    ReactiveFormsModule,
+    FormlyModule.forRoot(),
+    FormlyMaterialModule,
+    FormlyMatDatepickerModule
   ],
   exports: [RouterModule],
-  declarations: [FormComponent, SubmitFlagFormComponent, NestFormComponent,SimpleFormComponent, ValidateFieldsSubmitFormComponent, FieldErrorDisplayComponent]
+  declarations: [FormComponent, SubmitFlagFormComponent, NestFormComponent, DynamicFormComponent,SimpleFormComponent, ValidateFieldsSubmitFormComponent, FieldErrorDisplayComponent]
 })
 
 export class FormModule { }

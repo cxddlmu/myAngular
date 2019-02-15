@@ -36,9 +36,13 @@ import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { SafePipe } from './pipe/safePipe.pipe';
+
+import { MatNativeDateModule } from '@angular/material/core';
+
 @NgModule({
   imports: [
     CommonModule,
+    MatNativeDateModule,
     MatCheckboxModule,
     MatCheckboxModule,
     MatButtonModule,
@@ -71,7 +75,7 @@ import { SafePipe } from './pipe/safePipe.pipe';
     MatSortModule,
     MatPaginatorModule
   ],
-  exports: [CustomPipe, RepeatPipe,SafePipe,
+  exports: [CustomPipe, RepeatPipe,SafePipe,MatNativeDateModule,
     MatCheckboxModule,
     MatCheckboxModule,
     MatButtonModule,

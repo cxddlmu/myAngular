@@ -43,9 +43,10 @@ export class SubmitFlagFormComponent implements OnInit {
 
   onSubmit() {
     this.formSumitAttempt = true;
-    if (this.form.valid) {
-      console.log('form submitted');
-    }
+    console.log(    this.form.errors      );
+    // if (this.form.valid) {
+    //   console.log('form submitted');
+    // }
   }
 
   reset() {

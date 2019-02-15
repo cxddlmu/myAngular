@@ -11,6 +11,7 @@ import { SonComponent } from './son/son.component';
 import { FamilyComponent } from './family/family.component';
 import { SharedModule } from '../shared/shared.module';
 import { AtomSpinnerModule } from 'angular-epic-spinners';
+import { BasicComponent } from './basic/basic.component';
 
 const routes: Routes = [
 
@@ -53,6 +54,11 @@ const routes: Routes = [
         // canActivate: [ContentGuard],
         component: FamilyComponent,
         data: {}
+      }, {
+        path: "basic",
+        // canActivate: [ContentGuard],
+        component: BasicComponent,
+        data: {}
       },
     ]
   }
@@ -62,7 +68,7 @@ const routes: Routes = [
     CommonModule, RouterModule.forChild(routes), SharedModule, AtomSpinnerModule
   ],
   exports: [RouterModule],
-  declarations: [AngularCoreComponent, FatherComponent, MotherComponent, GrandfatherComponent,
+  declarations: [AngularCoreComponent, FatherComponent, MotherComponent, GrandfatherComponent,BasicComponent,
     GrandmotherComponent,
     DaughterComponent, SonComponent, FamilyComponent
   ],

@@ -37,7 +37,9 @@ export class BasicComponent implements OnInit {
     if (this.backgroundSwitcher) {
       this.ngClassArr.splice(1, 1, this.ngClassB);
       this.ngClassVal = 'backgroundColorGrey'
+      this.ngStyleVal={ backgroundColor: "grey" }
     } else {
+      this.ngStyleVal={ backgroundColor: "yellow" }
       this.ngClassVal = 'backgroundColorYellow'
       this.ngClassArr.splice(1, 1, this.ngClassA);
     }
