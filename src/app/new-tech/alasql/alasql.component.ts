@@ -3,7 +3,7 @@ import alasql from 'alasql'
 @Component({
   selector: 'app-alasql',
   templateUrl: './alasql.component.html',
-  styleUrls: ['./alasql.component.css']
+  // styleUrls: ['./alasql.component.css']
 })
 export class AlasqlComponent implements OnInit {
 

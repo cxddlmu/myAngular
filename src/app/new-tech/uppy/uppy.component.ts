@@ -8,7 +8,7 @@ import StatusBar from '@uppy/status-bar';
 @Component({
   selector: 'app-uppy',
   templateUrl: './uppy.component.html',
-  styleUrls: ['./uppy.component.css']
+  // styleUrls: ['./uppy.component.css']
 })
 export class UppyComponent implements OnInit {
 

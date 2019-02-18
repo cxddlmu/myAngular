@@ -8,7 +8,7 @@ import { createSelector } from '@ngrx/store';
 @Component({
   selector: 'app-ngrxStore',
   templateUrl: './ngrxStore.component.html',
-  styleUrls: ['./ngrxStore.component.css']
+  // styleUrls: ['./ngrxStore.component.css']
 })
 export class NgrxStoreComponent implements OnInit {
   ngOnInit() {
