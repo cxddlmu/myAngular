@@ -4,7 +4,7 @@ import { catchError } from 'rxjs/internal/operators/catchError';
 import { map } from 'rxjs/internal/operators/map';
 import { mergeMap } from 'rxjs/internal/operators/mergeMap';
 import { switchMap } from 'rxjs/internal/operators/switchMap';
-import { EMPTY, Observable, of } from 'rxjs';
+import { EMPTY, Observable, of, empty } from 'rxjs';
 import { NgrxStoreService } from './ngrxStore.service';
 import { DECREMENT, INCREMENT, INCREMENTX } from './ngrxStore.component';
 import { Action } from '@ngrx/store';
@@ -31,7 +31,7 @@ export class NgrxEffectsService {
             // const searchParams = rS.root.firstChild.params
             const searchParams = action.payload.routerState.params
             console.log(searchParams);
-            return of()
+            return empty;
         }));
     constructor(
         private actions$: Actions,
