@@ -23,6 +23,11 @@ import { NgrxEffectsService } from './ngrxStore/ngrxEffects.service';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreRouterConnectingModule, routerReducer, RouterStateSerializer } from '@ngrx/router-store';
 import { CustomSerializer } from 'src/app/new-tech/ngrxStore/router-state.serializer';
+import { LodashComponent } from './lodash/lodash.component';
+import { FuseComponent } from './fuse/fuse.component';
+import { DayjsComponent } from './dayjs/dayjs.component';
+import { RythmComponent } from './rythm/rythm.component';
+import { CssComponent } from './css/css.component';
 
 const routes: Routes = [
   {
@@ -40,6 +45,11 @@ const routes: Routes = [
       { path: "alasql", component: AlasqlComponent },
       { path: "uppy", component: UppyComponent },
       { path: "ngrxstore", component: NgrxStoreComponent },
+      { path: "lodash", component: LodashComponent },
+      { path: "fuse", component: FuseComponent },
+      { path: "dayjs", component: DayjsComponent },
+      { path: "rythm", component: RythmComponent },
+      { path: "css", component: CssComponent },
 
     ]
   }];
@@ -48,7 +58,7 @@ const routes: Routes = [
     CommonModule,
     RouterModule.forChild(routes),
     SharedModule, SortablejsModule,
-    StoreModule.forRoot({ count: counterReducer }), EffectsModule.forRoot([NgrxEffectsService]),
+    StoreModule.forRoot({ countroot: counterReducer }), EffectsModule.forRoot([NgrxEffectsService]),
     StoreRouterConnectingModule,
   ],
   declarations: [NewTechComponent, IronDBComponent, MagicGridComponent
@@ -60,8 +70,13 @@ const routes: Routes = [
     AnimejsComponent,
     AlasqlComponent,
     UppyComponent,
-    NgrxStoreComponent
-  ], providers: [NgrxStoreService, { provide: RouterStateSerializer, useClass: CustomSerializer }]
+    NgrxStoreComponent,
+    LodashComponent,
+    FuseComponent,
+    DayjsComponent,
+    RythmComponent,
+    CssComponent
+], providers: [NgrxStoreService, { provide: RouterStateSerializer, useClass: CustomSerializer }]
 })
 
 
