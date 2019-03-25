@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
+
 @Component({
   selector: 'app-basic',
   templateUrl: './basic.component.html',
@@ -11,6 +12,21 @@ export class BasicComponent implements OnInit {
   constructor(private http: HttpClient) {
 
   }
+  private person: any;
+
+  private reset(): void {
+    this.person = {
+      name: {
+        forename: 'John',
+        surname: 'Doe'
+      },
+      address: {
+        street: 'Lexington Avenue',
+        city: 'New York',
+        country: 'USA'
+      }
+    }
+  }
   ngStyleVal;
   ngClassVal;
   ngClassVal_1;
@@ -19,6 +35,7 @@ export class BasicComponent implements OnInit {
   ngClassB = 'backgroundColorGrey'
   ngClassArr: any[] = [this.ngClassB];
   ngOnInit() {
+    this.reset();
     this.ngStyleVal = { backgroundColor: "red" }
     this.ngClassVal = { 'backgroundColorGrey': this.backgroundSwitcher, 'backgroundColorYellow': !this.backgroundSwitcher }
     // this.ngClassVal = this.backgroundSwitcher ? 'backgroundColorGrey' : 'backgroundColorYellow'
@@ -26,7 +43,7 @@ export class BasicComponent implements OnInit {
     c(10);
     c.reset();
     c.interval = 5.0;
-    let res = this.http.get("http://10.187.7.212:3001").subscribe(x => {
+    let res = this.http.get("http://10.187.7.212:3000").subscribe(x => {
       console.log(x);
     }, y => {
       console.log(y);
@@ -37,13 +54,13 @@ export class BasicComponent implements OnInit {
     if (this.backgroundSwitcher) {
       this.ngClassArr.splice(1, 1, this.ngClassB);
       this.ngClassVal = 'backgroundColorGrey'
-      this.ngStyleVal={ backgroundColor: "grey" }
     } else {
-      this.ngStyleVal={ backgroundColor: "yellow" }
       this.ngClassVal = 'backgroundColorYellow'
       this.ngClassArr.splice(1, 1, this.ngClassA);
     }
   }
+
+  mapper
 
 }
 interface Counter {
