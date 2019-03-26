@@ -36,13 +36,12 @@ import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { SafePipe } from './pipe/safePipe.pipe';
-
-import { MatNativeDateModule } from '@angular/material/core';
-
+import { InterceptorComponent } from './interceptor/interceptor.component';
+import { ErrorHandlerComponent } from './errorHandler/errorHandler.component';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
 @NgModule({
   imports: [
     CommonModule,
-    MatNativeDateModule,
     MatCheckboxModule,
     MatCheckboxModule,
     MatButtonModule,
@@ -73,9 +72,10 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatSnackBarModule,
     MatTableModule,
     MatSortModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatMomentDateModule
   ],
-  exports: [CustomPipe, RepeatPipe,SafePipe,MatNativeDateModule,
+  exports: [CustomPipe, RepeatPipe,SafePipe,
     MatCheckboxModule,
     MatCheckboxModule,
     MatButtonModule,
@@ -106,8 +106,12 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatSnackBarModule,
     MatTableModule,
     MatSortModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatMomentDateModule
   ],
-  declarations: [CustomPipe, SharedComponent, RepeatPipe,SafePipe]
+  declarations: [CustomPipe, SharedComponent, RepeatPipe,SafePipe,
+    InterceptorComponent,
+    ErrorHandlerComponent
+]
 })
 export class SharedModule { }
