@@ -1,0 +1,95 @@
+<mat-drawer-container class="example-container">
+  <mat-drawer mode="side" opened>Drawer content</mat-drawer>
+  <mat-drawer-content>
+    <div fxLayout="row nowrap" fxLayoutAlign="start center" fxLayoutGap="30px">
+      <mat-form-field fxFlex="0 1 25%">
+        <mat-label>Prefix</mat-label>
+        <mat-select>
+          <mat-option *ngFor="let prefix of prefixList" [value]="prefix.key">
+            {{prefix.value}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div fxLayout="row nowrap" fxLayoutAlign="center center" fxLayoutGap="30px">
+      <mat-form-field fxFlex="0 1 50%">
+        <input matInput placeholder="Favorite food" value="Sushi">
+      </mat-form-field>
+      <mat-form-field fxFlex="0 1 50%">
+        <input matInput placeholder="Favorite food" value="Sushi1">
+      </mat-form-field>
+    </div>
+    <div fxLayout="row nowrap" fxLayoutAlign="center center" fxLayoutGap="30px">
+      <mat-form-field fxFlex="0 1 50%">
+        <input matInput placeholder="Favorite food" value="Sushi">
+      </mat-form-field>
+      <mat-form-field fxFlex="0 1 50%">
+        <mat-label>Prefix</mat-label>
+        <mat-select>
+          <mat-option *ngFor="let prefix of prefixList" [value]="prefix.key">
+            {{prefix.value}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div fxLayout="row nowrap" fxLayoutAlign="center center" fxLayoutGap="30px">
+      <mat-form-field fxFlex="0 1 50%">
+        <input matInput placeholder="ALIAS NAME" value="Sushi">
+      </mat-form-field>
+      <mat-form-field fxFlex="0 1 25%">
+        <input matInput placeholder="Favorite food" value="Sushi">
+      </mat-form-field>
+      <mat-form-field fxFlex="0 1 25%">
+        <input matInput placeholder="Favorite food" value="Sushi">
+      </mat-form-field>
+    </div>
+    <div fxLayout="row nowrap" fxLayoutAlign="center center" fxLayoutGap="30px">
+      <mat-form-field fxFlex="0 1 50%">
+        <input matInput [matDatepicker]="picker1" placeholder="{{label}} From">
+        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+        <mat-datepicker #picker1></mat-datepicker>
+      </mat-form-field>
+      <mat-form-field fxFlex="0 1 25%">
+        <mat-label>Prefix</mat-label>
+        <mat-select>
+          <mat-option *ngFor="let prefix of prefixList" [value]="prefix.key">
+            {{prefix.value}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field fxFlex="0 1 25%">
+        <mat-label>Prefix</mat-label>
+        <mat-select>
+          <mat-option *ngFor="let prefix of prefixList" [value]="prefix.key">
+            {{prefix.value}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div fxLayout="row nowrap" fxLayoutAlign="center center" fxLayoutGap="30px">
+      <mat-radio-group aria-label="Select an option" fxFlex="0 1 50%">
+        <mat-radio-button value="1">Option 1</mat-radio-button>
+        <mat-radio-button value="2">Option 2</mat-radio-button>
+        <mat-radio-button value="3">Option 3</mat-radio-button>
+      </mat-radio-group>
+      <mat-form-field fxFlex="0 1 50%">
+        <mat-label>Prefix</mat-label>
+        <mat-select>
+          <mat-option *ngFor="let prefix of prefixList" [value]="prefix.key">
+            {{prefix.value}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div fxLayout="row nowrap" fxLayoutAlign="center center" fxLayoutGap="30px">
+      <mat-form-field fxFlex="0 1 50%" *ngFor="let nation of nationalityList">
+        <mat-label>Prefix</mat-label>
+        <mat-select>
+          <mat-option *ngFor="let nation of nationList" [value]="nation.key">
+            {{nation.value}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </mat-drawer-content>
+</mat-drawer-container>
