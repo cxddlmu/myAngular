@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import _ from 'lodash'
 @Component({
   selector: 'app-lodash',
-  templateUrl: './lodash.component.html',
-  styleUrls: ['./lodash.component.css']
+  //templateUrl: './lodash.component.html',
+  //styleUrls: ['./lodash.component.css']
 })
 export class LodashComponent implements OnInit {
 
