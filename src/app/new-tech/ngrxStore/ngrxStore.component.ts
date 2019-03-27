@@ -5,11 +5,11 @@ import { Store } from '@ngrx/store';
 import { select } from '@ngrx/store';
 import { createSelector } from '@ngrx/store';
 import { NgrxStoreService } from './ngrxStore.service';
-import * as _ from 'lodash'
+import * as _ from 'lodash';
 @Component({
   selector: 'app-ngrxStore',
   templateUrl: './ngrxStore.component.html',
-  styleUrls: ['./ngrxStore.component.css']
+  // styleUrls: ['./ngrxStore.component.css']
 })
 export class NgrxStoreComponent implements OnInit {
   ngOnInit() {

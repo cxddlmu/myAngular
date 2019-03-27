@@ -3,7 +3,7 @@ import Fuse from 'fuse.js'
 @Component({
   selector: 'app-fuse',
   templateUrl: './fuse.component.html',
-  styleUrls: ['./fuse.component.css']
+  // styleUrls: ['./fuse.component.css']
 })
 export class FuseComponent implements OnInit {
 

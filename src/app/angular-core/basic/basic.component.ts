@@ -43,11 +43,13 @@ export class BasicComponent implements OnInit {
     c(10);
     c.reset();
     c.interval = 5.0;
-    let res = this.http.get("http://10.187.7.212:3000").subscribe(x => {
-      console.log(x);
-    }, y => {
-      console.log(y);
-    });
+    // let res = this.http.get("http://10.187.7.212:3000").subscribe(x => {
+    //   console.log(x);
+    // }, y => {
+    //   console.log(y);
+    // });
+    
+    
   }
   buttonClick() {
     this.backgroundSwitcher = !this.backgroundSwitcher;

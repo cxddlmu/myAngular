@@ -5,7 +5,7 @@ import fecha from 'fecha'
 @Component({
   selector: 'app-dayjs',
   templateUrl: './dayjs.component.html',
-  styleUrls: ['./dayjs.component.css']
+  // styleUrls: ['./dayjs.component.css']
 })
 export class DayjsComponent implements OnInit {
 

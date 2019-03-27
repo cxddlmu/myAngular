@@ -7,7 +7,7 @@ import {ComponentPortal, Portal, TemplatePortal} from '@angular/cdk/portal';
 @Component({
   selector: 'portal',
   templateUrl: 'portal.component.html',
-  styleUrls: ['portal.component.css'],
+  // styleUrls: ['portal.component.css'],
 })
 export class PortalComponent implements AfterViewInit {
   @ViewChild('templatePortalContent') templatePortalContent: TemplateRef<any>;
