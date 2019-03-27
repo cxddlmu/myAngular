@@ -1,32 +1,35 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Material2Component } from './material2.component';
-import { SharedModule } from '../shared/shared.module';
-import { Routes, RouterModule } from '@angular/router';
-import { Material2FormComponent } from './material2Form/material2Form.component';
-import { FlexLayoutModule } from '@angular/flex-layout';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { Material2Component } from "./material2.component";
+import { SharedModule } from "../shared/shared.module";
+import { Routes, RouterModule } from "@angular/router";
+import { Material2FormComponent } from "./material2Form/material2Form.component";
+import { FlexLayoutModule } from "@angular/flex-layout";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 const routes: Routes = [
-
-
   {
-    path: "", component: Material2Component,
+    path: "",
+    component: Material2Component,
     children: [
       {
         path: "material2Form",
         // canActivate: [ContentGuard],
         component: Material2FormComponent,
         data: {}
-      },
+      }
     ]
   }
 ];
 @NgModule({
   imports: [
-    CommonModule, RouterModule.forChild(routes), SharedModule,FlexLayoutModule
+    CommonModule,
+    RouterModule.forChild(routes),
+    SharedModule,
+    FlexLayoutModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
-  declarations: [Material2Component,
-    Material2FormComponent
-  ]
+  declarations: [Material2Component, Material2FormComponent]
 })
-export class Material2Module { }
+export class Material2Module {}

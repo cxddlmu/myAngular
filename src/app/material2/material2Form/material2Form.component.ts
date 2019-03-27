@@ -1,4 +1,6 @@
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, OnInit, Input, ViewChild } from "@angular/core";
+import { FormBuilder, Validators } from "@angular/forms";
+import { Required } from "src/app/shared/annotation/model-annotation";
 
 @Component({
   selector: "app-material2Form",
@@ -6,13 +8,27 @@ import { Component, OnInit, Input } from "@angular/core";
   // styleUrls: ['./material2Form.component.css']
 })
 export class Material2FormComponent implements OnInit {
-  constructor() {}
+  constructor(private fb: FormBuilder) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.personalInfoForm = this.fb.group({
+      prefix: ["", Validators.required],
+      firstName: [""],
+      lastName: [""]
+    });
+  }
+  personalInfoForm;
   @Input() label: string;
   @Input() start: any;
   @Input() end: any;
   prefixList = [{ key: 1, value: "value1" }, { key: 2, value: "value2" }];
-  nationalityList;
+  nationalityList = [{}];
   nationList = [{ key: "cn", value: "china" }, { key: "vn", value: "vienan" }];
+
+  onSubmit() {
+    console.log(this.domain);
+    console.log(this.personalInfoForm);
+  }
+  // @ViewChild("domain.prefix") prefix: viewchi;
+  domain = { prefix: "" };
 }
