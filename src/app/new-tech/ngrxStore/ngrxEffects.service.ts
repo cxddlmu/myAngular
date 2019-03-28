@@ -4,9 +4,9 @@ import { catchError } from 'rxjs/internal/operators/catchError';
 import { map } from 'rxjs/internal/operators/map';
 import { mergeMap } from 'rxjs/internal/operators/mergeMap';
 import { switchMap } from 'rxjs/internal/operators/switchMap';
-import { EMPTY, Observable, of, empty } from 'rxjs';
+import { EMPTY, Observable, of } from 'rxjs';
 import { NgrxStoreService } from './ngrxStore.service';
-import { DECREMENT, INCREMENT, INCREMENTX } from './ngrxStore.component';
+import { DECREMENT, INCREMENT, INCREMENTX, ActionTypes } from './ngrxStore.component';
 import { Action } from '@ngrx/store';
 @Injectable()
 export class NgrxEffectsService {
@@ -31,8 +31,17 @@ export class NgrxEffectsService {
             // const searchParams = rS.root.firstChild.params
             const searchParams = action.payload.routerState.params
             console.log(searchParams);
-            return empty;
+            return EMPTY
         }));
+
+    @Effect()
+    selectDemo$ = this.actions$
+        .pipe(
+            ofType(ActionTypes.SelectDemo),
+            switchMap((action: any) => {
+                return action;
+            }));
+
     constructor(
         private actions$: Actions,
         private ngrxStoreService: NgrxStoreService
