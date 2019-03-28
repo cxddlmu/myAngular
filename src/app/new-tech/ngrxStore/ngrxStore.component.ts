@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { Action, createFeatureSelector } from '@ngrx/store';
+import { Action, createFeatureSelector, ActionReducerMap } from '@ngrx/store';
 import { Observable, BehaviorSubject, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { select } from '@ngrx/store';
 import { createSelector } from '@ngrx/store';
 import { NgrxStoreService } from './ngrxStore.service';
-import * as _ from 'lodash';
+import * as _ from 'lodash'
+import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
 @Component({
   selector: 'app-ngrxStore',
   templateUrl: './ngrxStore.component.html',
-  // styleUrls: ['./ngrxStore.component.css']
+  styleUrls: ['./ngrxStore.component.css']
 })
 export class NgrxStoreComponent implements OnInit {
   ngOnInit() {
@@ -71,6 +72,9 @@ export const DECREMENT = 'DECREMENT';
 export const RESET = 'RESET';
 export const SET_AGE = 'SET_AGE';
 export const SET_SCHOOL_NAME = 'SET_SCHOOL_NAME';
+
+
+
 interface AppState {
   count: number;
   person: {
@@ -81,15 +85,51 @@ interface AppState {
     name: string
   }
 }
-const initialState = { count: 0, person: { name: 'name', age: 0 },school:{name:'schoolname'} };
+export interface BasicInfo {
+  firstName: string;
+  lastName: string;
+  prefix: string;
+}
 
-export function counterReducer(state = initialState, action: AllActions) {
+export const initialState = { count: 0, person: { name: 'name', age: 0 }, school: { name: 'schoolname' } };
+export enum ActionTypes {
+  SelectDemo = '[demographic Page] select demographic',
+  InsertDemo = '[demographic Page] insert demographic',
+}
+
+export interface Demographic {
+  basicInfo: BasicInfo;
+}
+export interface State extends EntityState<Demographic> {
+  // additional entities state properties
+  demographic: {},
+}
+
+export const adapter: EntityAdapter<Demographic> = createEntityAdapter<Demographic>();
+export const initialStateForDemo: State = adapter.getInitialState({
+  // additional entity state properties
+  demographic: {},
+});
+export const demoReducers = {
+  demoReducer: demoReducer
+};
+export function demoReducer(state = initialStateForDemo, action: ActionsUnion) {
+  switch (action.type) {
+    case ActionTypes.SelectDemo:
+      return { ...state };
+
+    case ActionTypes.InsertDemo:
+      return adapter.addOne(action.payload, state);
+    default:
+      return state;
+  }
+}
+export function counterReducer(state = initialState, action: ActionsUnion) {
   switch (action.type) {
     case INCREMENT:
       // console.log(state);
       state.count + state.count + 1;
       return { ...state };
-
     case DECREMENT:
       state.count - 1;
       return state;
@@ -133,7 +173,15 @@ export class setSchoolName implements Action {
   readonly type = SET_SCHOOL_NAME;
   constructor(public payload: string) { }
 }
-export type AllActions = incrementX | increment | reset | decrement | setAge | setSchoolName;
+export class selectDemo implements Action {
+  readonly type = ActionTypes.SelectDemo;
+  constructor() { }
+}
+export class insertDemo implements Action {
+  readonly type = ActionTypes.InsertDemo;
+  constructor(public payload: Demographic) { }
+}
+export type ActionsUnion = incrementX | increment | reset | decrement | setAge | setSchoolName | insertDemo | selectDemo;
 export interface Person {
   name: string;
   age: number;
@@ -142,9 +190,27 @@ export interface School {
   name: string;
   age: number;
 }
+
+// get the selectors
+const {
+  selectIds,
+  selectEntities,
+  selectAll,
+  selectTotal,
+} = adapter.getSelectors();
+
+export const selectBasicInfo = (state: Demographic) => state.basicInfo;
+export const demo = createFeatureSelector<any>('demo');
+
+export const selectByFirstName = createSelector(
+  selectBasicInfo,
+  (basicInfo, firstName) => basicInfo[firstName]
+);
 // export const selectFeature = (state: AppState) => state.person;
 export const root = createFeatureSelector<any>('countroot');
 export const selectFeatureCount = createSelector(
   root,
   (person: School) => person
 );
+
+
