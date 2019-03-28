@@ -1,7 +1,8 @@
-    <form (ngSubmit)="onSubmit()" [formGroup]="personalInfoForm" >
-    <mat-drawer-container class="example-container">
-      <mat-drawer mode="side" opened>Drawer content</mat-drawer>
-      <mat-drawer-content>
+<form (ngSubmit)="onSubmit()">
+  <mat-drawer-container class="example-container">
+    <mat-drawer mode="side" opened>Drawer content</mat-drawer>
+    <mat-drawer-content>
+      <div [formGroup]="basicInfo">
         <div fxLayout="row nowrap" fxLayoutAlign="start center">
           <mat-form-field fxFlex="22.5">
             <mat-label>Prefix</mat-label>
@@ -13,20 +14,20 @@
           </mat-form-field>
         </div>
         <div fxLayout="row nowrap" fxLayoutAlign="start center">
-          <mat-form-field fxFlex="45" >
+          <mat-form-field fxFlex="45">
             <input matInput placeholder="Favorite food" value="Sushi" formControlName="firstName">
           </mat-form-field>
-          <mat-form-field fxFlex="45" fxFlexOffset="5" >
+          <mat-form-field fxFlex="45" fxFlexOffset="5">
             <input matInput placeholder="Favorite food" value="Sushi1" formControlName="lastName">
           </mat-form-field>
         </div>
         <div fxLayout="row nowrap" fxLayoutAlign="start center">
           <mat-form-field fxFlex="45">
-            <input matInput placeholder="Favorite food" value="Sushi">
+            <input matInput placeholder="Favorite food" value="Sushi" formControlName="customerTitle">
           </mat-form-field>
           <mat-form-field fxFlex="45" fxFlexOffset="5">
             <mat-label>Prefix</mat-label>
-            <mat-select>
+            <mat-select formControlName="saluteBy">
               <mat-option *ngFor="let prefix of prefixList" [value]="prefix.key">
                 {{prefix.value}}
               </mat-option>
@@ -35,24 +36,24 @@
         </div>
         <div fxLayout="row nowrap" fxLayoutAlign="start center">
           <mat-form-field fxFlex="45">
-            <input matInput placeholder="ALIAS NAME" value="Sushi">
+            <input matInput placeholder="ALIAS NAME" value="Sushi" formControlName="aliasName">
           </mat-form-field>
           <mat-form-field fxFlex="20" fxFlexOffset="5">
-            <input matInput placeholder="Favorite food" value="Sushi">
+            <input matInput placeholder="Favorite food" value="Sushi" formControlName="otherName">
           </mat-form-field>
           <mat-form-field fxFlex="20" fxFlexOffset="5">
-            <input matInput placeholder="Favorite food" value="Sushi">
+            <input matInput placeholder="Favorite food" value="Sushi" formControlName="motherMaidenName">
           </mat-form-field>
         </div>
         <div fxLayout="row nowrap" fxLayoutAlign="start center">
           <mat-form-field fxFlex="45">
-            <input matInput [matDatepicker]="picker1" placeholder="{{label}} From">
+            <input matInput [matDatepicker]="picker1" placeholder="{{label}} From" formControlName="birthday">
             <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
             <mat-datepicker #picker1></mat-datepicker>
           </mat-form-field>
           <mat-form-field fxFlex="20" fxFlexOffset="5">
             <mat-label>Prefix</mat-label>
-            <mat-select>
+            <mat-select formControlName="spokenLanguage">
               <mat-option *ngFor="let prefix of prefixList" [value]="prefix.key">
                 {{prefix.value}}
               </mat-option>
@@ -60,7 +61,7 @@
           </mat-form-field>
           <mat-form-field fxFlex="20" fxFlexOffset="5">
             <mat-label>Prefix</mat-label>
-            <mat-select>
+            <mat-select formControlName="correspondenceLanguage">
               <mat-option *ngFor="let prefix of prefixList" [value]="prefix.key">
                 {{prefix.value}}
               </mat-option>
@@ -68,7 +69,7 @@
           </mat-form-field>
         </div>
         <div fxLayout="row nowrap" fxLayoutAlign="start center">
-          <mat-radio-group aria-label="Select an option" fxFlex="45" fxLayoutAlign="space-around center">
+          <mat-radio-group aria-label="Select an option" fxFlex="45" fxLayoutAlign="space-around center" formControlName="gender">
             <mat-radio-button value="1">Option 1</mat-radio-button>
             <mat-radio-button value="2">Option 2</mat-radio-button>
             <mat-radio-button value="3">Option 3</mat-radio-button>
@@ -76,25 +77,29 @@
 
           <mat-form-field fxFlex="45" fxFlexOffset="5">
             <mat-label>Prefix</mat-label>
-            <mat-select>
+            <mat-select formControlName="maritalStatus">
               <mat-option *ngFor="let prefix of prefixList" [value]="prefix.key">
                 {{prefix.value}}
               </mat-option>
             </mat-select>
           </mat-form-field>
         </div>
-        <div fxLayout="row nowrap" fxLayoutAlign="start center">
-          <mat-form-field fxFlex="45" *ngFor="let nationality of nationalityList">
+      </div>
+      <div [formGroup]="nationalityForm">
+        <div fxLayout="row nowrap" fxLayoutAlign="start center" formArrayName="nationalityArray">
+          <mat-form-field fxFlex="45" *ngFor="let nationality of nationalityList;let index=index" [formGroupName]="index">
             <mat-label>Prefix</mat-label>
-            <mat-select>
+            <mat-select formControlName="nationalityId">
               <mat-option *ngFor="let nation of nationList" [value]="nation.key">
                 {{nation.value}}
               </mat-option>
             </mat-select>
           </mat-form-field>
         </div>
-      </mat-drawer-content>
-    </mat-drawer-container>
-    <button type="submit" class="btn btn-success">Submit</button>
+      </div>
+    </mat-drawer-content>
+  </mat-drawer-container>
+  <button type="submit" class="btn btn-success">Submit</button>
+  <button type="submit" class="btn btn-success">Reset</button>
 
-  </form>
+</form>
