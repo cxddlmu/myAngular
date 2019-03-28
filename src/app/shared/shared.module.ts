@@ -39,6 +39,13 @@ import { SafePipe } from './pipe/safePipe.pipe';
 import { InterceptorComponent } from './interceptor/interceptor.component';
 import { ErrorHandlerComponent } from './errorHandler/errorHandler.component';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
+import { StoreModule } from '@ngrx/store';
+import { counterReducer, demoReducers } from '../new-tech/ngrxStore/ngrxStore.component';
+import { StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
+import { NgrxEffectsService } from '../new-tech/ngrxStore/ngrxEffects.service';
+import { EffectsModule } from '@ngrx/effects';
+import { NgrxStoreService } from '../new-tech/ngrxStore/ngrxStore.service';
+import { CustomSerializer } from '../new-tech/ngrxStore/router-state.serializer';
 @NgModule({
   imports: [
     CommonModule,
@@ -73,9 +80,12 @@ import { MatMomentDateModule } from '@angular/material-moment-adapter';
     MatTableModule,
     MatSortModule,
     MatPaginatorModule,
-    MatMomentDateModule
+    MatMomentDateModule,
+    StoreModule.forRoot({ countroot: counterReducer }), EffectsModule.forRoot([NgrxEffectsService]),
+    StoreModule.forFeature("demo", demoReducers),
+    StoreRouterConnectingModule,
   ],
-  exports: [CustomPipe, RepeatPipe,SafePipe,
+  exports: [CustomPipe, RepeatPipe, SafePipe,
     MatCheckboxModule,
     MatCheckboxModule,
     MatButtonModule,
@@ -109,9 +119,10 @@ import { MatMomentDateModule } from '@angular/material-moment-adapter';
     MatPaginatorModule,
     MatMomentDateModule
   ],
-  declarations: [CustomPipe, SharedComponent, RepeatPipe,SafePipe,
+  declarations: [CustomPipe, SharedComponent, RepeatPipe, SafePipe,
     InterceptorComponent,
     ErrorHandlerComponent
-]
+  ],
+  providers: [NgrxStoreService, { provide: RouterStateSerializer, useClass: CustomSerializer }]
 })
 export class SharedModule { }
