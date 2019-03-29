@@ -85,41 +85,36 @@ interface AppState {
     name: string
   }
 }
+export const initialState = { count: 0, person: { name: 'name', age: 0 }, school: { name: 'schoolname' } };
 export interface BasicInfo {
+  id: string;
   firstName: string;
   lastName: string;
   prefix: string;
 }
-
-export const initialState = { count: 0, person: { name: 'name', age: 0 }, school: { name: 'schoolname' } };
-export enum ActionTypes {
-  SelectDemo = '[demographic Page] select demographic',
-  InsertDemo = '[demographic Page] insert demographic',
+export interface Nationality {
+  id: string;
+  nationalityId: string;
+  nationalityName: string;
 }
-
 export interface Demographic {
+  id: string;
   basicInfo: BasicInfo;
+  nationality: Nationality[];
 }
-export interface State extends EntityState<Demographic> {
-  // additional entities state properties
-  demographic: {},
+
+export enum ActionTypes {
+  InsertDemo = '[demographic Page] insert demographic'
 }
 
 export const adapter: EntityAdapter<Demographic> = createEntityAdapter<Demographic>();
-export const initialStateForDemo: State = adapter.getInitialState({
-  // additional entity state properties
-  demographic: {},
-});
-export const demoReducers = {
-  demoReducer: demoReducer
-};
+export interface State extends EntityState<Demographic> { }
+export const initialStateForDemo: State = adapter.getInitialState();
+
 export function demoReducer(state = initialStateForDemo, action: ActionsUnion) {
   switch (action.type) {
-    case ActionTypes.SelectDemo:
-      return { ...state };
-
     case ActionTypes.InsertDemo:
-      return adapter.addOne(action.payload, state);
+      return adapter.upsertOne(action.payload, state);
     default:
       return state;
   }
@@ -149,6 +144,10 @@ export function counterReducer(state = initialState, action: ActionsUnion) {
       return state;
   }
 }
+export const reducers: ActionReducerMap<any> = {
+  counter: counterReducer,
+  demo: demoReducer
+};
 export class incrementX implements Action {
   readonly type = INCREMENTX;
   constructor(public payload: number) { }
@@ -173,15 +172,15 @@ export class setSchoolName implements Action {
   readonly type = SET_SCHOOL_NAME;
   constructor(public payload: string) { }
 }
-export class selectDemo implements Action {
-  readonly type = ActionTypes.SelectDemo;
-  constructor() { }
-}
+// export class selectDemo implements Action {
+//   readonly type = ActionTypes.SelectDemo;
+//   constructor() { }
+// }
 export class insertDemo implements Action {
   readonly type = ActionTypes.InsertDemo;
   constructor(public payload: Demographic) { }
 }
-export type ActionsUnion = incrementX | increment | reset | decrement | setAge | setSchoolName | insertDemo | selectDemo;
+export type ActionsUnion = incrementX | increment | reset | decrement | setAge | setSchoolName | insertDemo;
 export interface Person {
   name: string;
   age: number;
@@ -191,26 +190,30 @@ export interface School {
   age: number;
 }
 
-// get the selectors
-const {
+export const demo = createFeatureSelector<any>('demo');
+export const {
   selectIds,
   selectEntities,
   selectAll,
   selectTotal,
-} = adapter.getSelectors();
+} = adapter.getSelectors(demo);
 
-export const selectBasicInfo = (state: Demographic) => state.basicInfo;
-export const demo = createFeatureSelector<any>('demo');
-
-export const selectByFirstName = createSelector(
-  selectBasicInfo,
-  (basicInfo, firstName) => basicInfo[firstName]
+export const selectBasicInfo = createSelector(
+  selectEntities,
+  (entities) => {
+    console.log(entities);
+    return entities[0]['basicInfo']
+  }
 );
+
+
+
 // export const selectFeature = (state: AppState) => state.person;
 export const root = createFeatureSelector<any>('countroot');
 export const selectFeatureCount = createSelector(
   root,
   (person: School) => person
 );
+
 
 
