@@ -40,7 +40,7 @@ import { InterceptorComponent } from './interceptor/interceptor.component';
 import { ErrorHandlerComponent } from './errorHandler/errorHandler.component';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { StoreModule } from '@ngrx/store';
-import { counterReducer, demoReducers } from '../new-tech/ngrxStore/ngrxStore.component';
+import { reducers } from '../new-tech/ngrxStore/ngrxStore.component';
 import { StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
 import { NgrxEffectsService } from '../new-tech/ngrxStore/ngrxEffects.service';
 import { EffectsModule } from '@ngrx/effects';
@@ -81,8 +81,7 @@ import { CustomSerializer } from '../new-tech/ngrxStore/router-state.serializer'
     MatSortModule,
     MatPaginatorModule,
     MatMomentDateModule,
-    StoreModule.forRoot({ countroot: counterReducer }), EffectsModule.forRoot([NgrxEffectsService]),
-    StoreModule.forFeature("demo", demoReducers),
+    StoreModule.forRoot(reducers), EffectsModule.forRoot([NgrxEffectsService]),
     StoreRouterConnectingModule,
   ],
   exports: [CustomPipe, RepeatPipe, SafePipe,
