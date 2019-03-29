@@ -2,7 +2,7 @@ import { Component, OnInit, Input, ViewChild } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { Required } from "src/app/shared/annotation/model-annotation";
 import { Store } from "@ngrx/store";
-import { ActionTypes, insertDemo, BasicInfo, Demographic } from "src/app/new-tech/ngrxStore/ngrxStore.component";
+import { ActionTypes, insertDemo, BasicInfo, Demographic, selectBasicInfo, selectAll, selectEntities } from "src/app/new-tech/ngrxStore/ngrxStore.component";
 
 @Component({
   selector: "app-material2Form",
@@ -35,12 +35,11 @@ export class Material2FormComponent implements OnInit {
         })
       ], Validators.required),
     });
+
   }
   basicInfo;
   nationalityForm;
-  demo: Demographic = {
-    basicInfo: this.basicInfo
-  }
+
   @Input() label: string;
   @Input() start: any;
   @Input() end: any;
@@ -49,11 +48,18 @@ export class Material2FormComponent implements OnInit {
   nationList = [{ key: "cn", value: "china" }, { key: "vn", value: "vienan" }];
 
   onSubmit() {
-    console.log(this.domain);
-    console.log(this.basicInfo);
-    this.store.dispatch(new insertDemo(this.demo));
-    this.store.select(ActionTypes.SelectDemo).subscribe(val => { console.log(">>>>>>>" + JSON.stringify(val)); })
+    // console.log(this.domain);
+    let demo: Demographic = {
+      basicInfo: this.basicInfo.value,
+      nationality: this.nationalityForm.value,
+      id: '0'
+    }
+    console.log(demo);
+    this.store.dispatch(new insertDemo(demo));
+    this.store.select(selectAll).subscribe(val => { console.log(">>>>>>>" + JSON.stringify(val)); })
+    this.store.select(selectEntities).subscribe(val => { console.log(">>>>>>>" + JSON.stringify(val)); })
+    this.store.select(selectBasicInfo).subscribe(val => { console.log(">>>>>>>" + JSON.stringify(val)); })
   }
   // @ViewChild("domain.prefix") prefix: viewchi;
-  domain = { prefix: "" };
+  // domain = { prefix: "" };
 }
