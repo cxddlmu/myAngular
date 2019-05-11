@@ -10,7 +10,7 @@ import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
 @Component({
   selector: 'app-ngrxStore',
   templateUrl: './ngrxStore.component.html',
-  styleUrls: ['./ngrxStore.component.css']
+  // styleUrls: ['./ngrxStore.component.css']
 })
 export class NgrxStoreComponent implements OnInit {
   ngOnInit() {

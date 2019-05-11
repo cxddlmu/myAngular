@@ -34,13 +34,13 @@ export class NgrxEffectsService {
             return EMPTY
         }));
 
-    @Effect()
-    selectDemo$ = this.actions$
-        .pipe(
-            ofType(ActionTypes.SelectDemo),
-            switchMap((action: any) => {
-                return action;
-            }));
+    // @Effect()
+    // selectDemo$ = this.actions$
+    //     .pipe(
+    //         ofType(ActionTypes.SelectDemo),
+    //         switchMap((action: any) => {
+    //             return action;
+    //         }));
 
     constructor(
         private actions$: Actions,

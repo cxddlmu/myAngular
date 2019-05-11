@@ -34,6 +34,7 @@ export class BasicComponent implements OnInit {
   ngClassA = 'backgroundColorYellow'
   ngClassB = 'backgroundColorGrey'
   ngClassArr: any[] = [this.ngClassB];
+  tmp={};
   ngOnInit() {
     this.reset();
     this.ngStyleVal = { backgroundColor: "red" }
@@ -48,7 +49,7 @@ export class BasicComponent implements OnInit {
     // }, y => {
     //   console.log(y);
     // });
-    
+    this.tmp.a=()=>{this.buttonClick();}
     
   }
   buttonClick() {

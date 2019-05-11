@@ -15,7 +15,7 @@ import { HotkeysComponent } from './hotkeys/hotkeys.component';
 import { AnimejsComponent } from './animejs/animejs.component';
 import { AlasqlComponent } from './alasql/alasql.component';
 import { UppyComponent } from './uppy/uppy.component';
-import { NgrxStoreComponent, demoReducer } from './ngrxStore/ngrxStore.component';
+import { NgrxStoreComponent } from './ngrxStore/ngrxStore.component';
 import { StoreModule, Store } from '@ngrx/store';
 import { counterReducer } from './ngrxStore/ngrxStore.component';
 import { NgrxStoreService } from './ngrxStore/ngrxStore.service';
